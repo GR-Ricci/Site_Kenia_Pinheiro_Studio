@@ -1,4 +1,5 @@
 <script setup>
+<<<<<<< Updated upstream
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import SectionEyebrow from '@/components/ui/SectionEyebrow.vue'
@@ -78,6 +79,7 @@ import Banner from '@/components/pages/service/servicesbanner.vue'
 
 <template>
   <Banner />
+>>>>>>> Stashed changes
 </template>
 
 <style scoped>
