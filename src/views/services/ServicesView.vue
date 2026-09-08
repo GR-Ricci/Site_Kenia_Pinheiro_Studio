@@ -72,6 +72,12 @@ const openBooking = (sub) => {
       @close="bookingItem = null"
     />
   </div>
+=======
+import Banner from '@/components/pages/service/servicesbanner.vue'
+</script>
+
+<template>
+  <Banner />
 </template>
 
 <style scoped>
