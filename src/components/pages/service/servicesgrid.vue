@@ -26,7 +26,9 @@ function setActiveTag(tag) {
                         <h1>Penteados</h1>
                     </div>
                     <div class="-Services_Grid_Card_Info">
-
+                        <h2>
+                            A partir de R$ 60
+                        </h2>
                     </div>
                 </button>
             </div>
@@ -117,6 +119,7 @@ function setActiveTag(tag) {
 
 .-Services_Grid_Card{
     display: flex;
+    flex-direction: column;
     overflow: hidden;  
     width: 250px;
     aspect-ratio: 250/260;
@@ -139,12 +142,13 @@ function setActiveTag(tag) {
     bottom: 12px;
     left: 12px;
     color: #FAF7F2;
+    font-size: 18px;
     font-family: 'Playfair Display', serif;
     font-weight: bold;
-    -webkit-text-stroke: 0.2px #C9A66B;
 }
-.--Services_Grid_Card_Info{
-
+.-Services_Grid_Card_Info{
+    width: 100%;
+    border-top: 1px solid #C9A66B;
 }
 
 </style>
