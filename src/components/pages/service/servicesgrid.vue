@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 
-const ActiveTag = ref(null)
+const ActiveTag = ref(null);
+import Image from '@/assets/images/services/gugu.png';
+const ImageTest = ref(`url(${Image})`);
 
 function setActiveTag(tag) {
     ActiveTag.value = tag
@@ -18,7 +20,16 @@ function setActiveTag(tag) {
                     <button @click="setActiveTag('estetica')" :class="{ active: ActiveTag === 'estetica'}"><span>Estética</span></button>
                     <button @click="setActiveTag('eventos')" :class="{ active: ActiveTag === 'eventos'}"><span>Eventos</span></button>
             </div>
-                
+            <div class="-Services_Grid_Content">
+                <button class="-Services_Grid_Card">
+                    <div class="-Services_Grid_Card_Image" :style="{'--card-image': ImageTest }">
+                        <h1>Penteados</h1>
+                    </div>
+                    <div class="-Services_Grid_Card_Info">
+
+                    </div>
+                </button>
+            </div>
         </div>
     </section>
 </template>
@@ -26,13 +37,13 @@ function setActiveTag(tag) {
 <style scoped>
 
 .-Services_Filter{
+    width:100%;
     display:flex;
     flex-direction:row;
     justify-content:center;
     gap: 5px;
     padding: 16px;
     background-color:#FAF7F2;
-    width: auto;
     border-bottom: 1px solid #1C100910;
 }
 
@@ -90,5 +101,50 @@ function setActiveTag(tag) {
     transition: transform 0.3s ease-in-out;
 }
 
+.-Services_Grid{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    width: 100%;
+}
+
+.-Services_Grid_Content{
+    margin-top: 20px;
+    width: 900px;
+    height: auto;
+}
+
+.-Services_Grid_Card{
+    display: flex;
+    overflow: hidden;  
+    width: 250px;
+    aspect-ratio: 250/260;
+    background:#FFFFFF;
+    border: 1px solid #C9A66B;
+    border-radius: 7px;
+}
+
+.-Services_Grid_Card_Image{
+    position: relative;
+    width: 100%;
+    height:195px;
+    background-image: var(--card-image);
+    background-size: cover;
+    background-position: center;
+}
+
+.-Services_Grid_Card_Image h1{
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    color: #FAF7F2;
+    font-family: 'Playfair Display', serif;
+    font-weight: bold;
+    -webkit-text-stroke: 0.2px #C9A66B;
+}
+.--Services_Grid_Card_Info{
+
+}
 
 </style>
