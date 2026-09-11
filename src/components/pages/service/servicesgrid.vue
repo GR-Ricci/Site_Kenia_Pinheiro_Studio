@@ -109,12 +109,14 @@ function setActiveTag(tag) {
     justify-content:center;
     align-items:center;
     width: 100%;
+    
 }
 
 .-Services_Grid_Content{
     margin-top: 20px;
     width: 900px;
     height: auto;
+    align-items: flex-start;
 }
 
 .-Services_Grid_Card{
@@ -147,8 +149,18 @@ function setActiveTag(tag) {
     font-weight: bold;
 }
 .-Services_Grid_Card_Info{
+    align-content: center;
+    justify-content: left;
+    /*text-align: left;*/
     width: 100%;
+    height: 20%;
     border-top: 1px solid #C9A66B;
+    
+}
+.-Services_Grid_Card_Info h1{
+    position:absolute;
+    bottom: 20px;
+    
 }
 
 </style>
