@@ -2,47 +2,26 @@
 
 <template>
   <div class="navbar">
-    <div class="navbar__icon">
-      <i class="card--icon"> KP </i>
-    </div>
+    <RouterLink to="/" class="navbar__icon">
+      <img src="@/assets/images/logo/logo.svg" alt="logo" />
+    </RouterLink>
 
     <div class="navbar__buttons">
-      <RouterLink to="/" class="card card--home" active-class="card--active"
-        >Início</RouterLink
-      >
+      <RouterLink to="/" class="card card--home" active-class="card--active">Início</RouterLink>
 
-      <RouterLink
-        to="/services"
-        class="card card--service"
-        active-class="card--active"
-        >Serviços</RouterLink
-      >
+      <RouterLink to="/services" class="card card--service" active-class="card--active">Serviços</RouterLink>
 
-      <RouterLink
-        to="/about"
-        class="card card--about"
-        active-class="card--active"
-        >Sobre Nós</RouterLink
-      >
+      <RouterLink to="/about" class="card card--about" active-class="card--active">Sobre Nós</RouterLink>
 
-      <RouterLink
-        to="/contact"
-        class="card card--contact"
-        active-class="card--active"
-        >Contato</RouterLink
-      >
+      <RouterLink to="/contact" class="card card--contact" active-class="card--active">Contato</RouterLink>
 
-      <RouterLink
-        to="/gallery"
-        class="card card--gallery"
-        active-class="card--active"
-        >Galeria</RouterLink
-      >
+      <RouterLink to="/gallery" class="card card--gallery" active-class="card--active">Galeria</RouterLink>
     </div>
   </div>
 </template>
 
 <style scoped>
+/* --------------footer geral----------------------------------------------------*/
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -52,6 +31,8 @@
   background: var(--kp-mahogany);
   border-bottom: 0.3rem solid var(--kp-gold);
 }
+
+/* --------------buttons ----------------------------------------------------*/
 
 .navbar__buttons {
   display: flex;
@@ -87,26 +68,25 @@ card:active {
   visibility: visible; /* ← só aparece no ativo */
 }
 
-.card--icon {
-  display: flex;
-  margin: 0.5rem 0 0.5rem 4rem;
+.navbar__icon {
+  display: inline-block;
+  width: fit-content;
+  height: fit-content;
+  line-height: 0;
+}
 
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.navbar__icon img {
+  margin: 0.5rem 0 0.6rem 4rem;
+
   width: 5rem;
-  height: 5rem;
+  height: auto;
+}
 
-  background: rgb(101, 31, 42);
-  border: 2px solid rgb(201, 166, 107);
+.navbar__icon:hover {
+  opacity: 80%;
+}
 
-  /* <- tira o itálico do <i> */
-  font-style: normal;
-
-  /* <- aplica a fonte no próprio <i> */
-  font-family: var(--font-script), sans-serif;
-  font-size: 2rem;
-  line-height: 1;
-  color: rgb(245, 235, 221);
+.navbar__icon:active {
+  opacity: 100%;
 }
 </style>
