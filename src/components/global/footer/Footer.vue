@@ -8,7 +8,7 @@
           <img src="@/assets/images/logo/logo.svg" alt="logo" />
           <div class="card--logo__text">Studio</div>
         </div>
-        <div class="card--adress">Sertãozinho, SP</div>
+        <div class="card--address">Sertãozinho, SP</div>
         <div class="card--description">Atendimento com Hora Marcada</div>
       </div>
 
@@ -111,7 +111,7 @@
   color: var(--kp-creme);
 }
 
-.card--adress {
+.card--address {
   font-size: 1.3rem;
   margin-top: 1rem;
 
@@ -129,13 +129,11 @@
 .footer--navbar {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* agora centraliza na VERTICAL */
+  justify-content: center;
   align-items: flex-start;
 
   margin: 0.5rem 2rem 0.5rem 2rem;
   font-family: lato, sans-serif;
-
-  /*background: blue;*/
 }
 
 .card--title {
@@ -165,7 +163,7 @@
 
 .footer--social {
   flex-direction: column;
-  justify-content: center; /* agora centraliza na VERTICAL */
+  justify-content: center;
   align-items: flex-start;
 
   margin: 0.5rem 4rem 0.5rem 0;
