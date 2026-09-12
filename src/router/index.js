@@ -3,8 +3,8 @@ import HomeView from '@/views/home/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  // O protótipo sempre volta ao topo ao trocar de página.
   scrollBehavior: () => ({ top: 0 }),
+
   routes: [
     {
       path: '/',
@@ -12,7 +12,6 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      // Aceita ?tab=Cabelos|Unhas|Estética|Eventos vindo do carrossel da Início.
       path: '/services',
       name: 'ServicesView',
       component: () => import('@/views/services/ServicesView.vue'),
