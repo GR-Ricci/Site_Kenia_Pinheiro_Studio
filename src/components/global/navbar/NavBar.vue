@@ -50,7 +50,7 @@
   content: '•';
   margin-right: 0.4rem;
   color: var(--kp-gold-low);
-  visibility: hidden; /* ← ocupa espaço, mas não aparece */
+  visibility: hidden; 
 }
 
 card:active {
@@ -65,7 +65,7 @@ card:active {
 .card--active::before {
   transition: all 200ms ease-in-out;
   color: var(--kp-gold);
-  visibility: visible; /* ← só aparece no ativo */
+  visibility: visible;
 }
 
 .navbar__icon {

@@ -63,7 +63,7 @@
 
 .footer--container--copyright {
   display: flex;
-  flex-direction: column; /* ← empilha hr e texto */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 
@@ -71,7 +71,7 @@
 }
 
 .footer--container--copyright hr {
-  width: 80%; /* ← ocupa largura toda */
+  width: 80%;
   height: 0.1rem;
   background: var(--kp-creme-low);
   border: none;
@@ -90,7 +90,7 @@
 
 .footer--informative {
   margin: 1rem 0 1rem 4rem;
-  /*background: yellow;*/
+
   font-family: lato, sans-serif;
 }
 
@@ -169,7 +169,6 @@
   align-items: flex-start;
 
   margin: 0.5rem 4rem 0.5rem 0;
-  /*background: green;*/
 }
 
 .card--social {
