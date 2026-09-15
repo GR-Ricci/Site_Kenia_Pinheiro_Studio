@@ -15,40 +15,15 @@ const ImageTest = ref(`url(${Image})`);
                     </div>
                 </div>
                 <div class="-Services_booking_modal_choice_p">
-                    <p>Escolha seu Profissional:</p>
+                    <p>Escolha a modalidade:</p>
                 </div>
                 <div class="-Services_booking_modal_choice">
                     <button class="-Services_booking_modal_choice_button">
-                        <h1>parar casamento</h1>
-
-                    </button>
-                                        <button class="-Services_booking_modal_choice_button">
-                        <h1>parar casamento</h1>
-
-                    </button>
-                                        <button class="-Services_booking_modal_choice_button">
-                        <h1>parar casamento</h1>
-
-                    </button>
-                                        <button class="-Services_booking_modal_choice_button">
-                        <h1>parar casamento</h1>
-
-                    </button>
-                                        <button class="-Services_booking_modal_choice_button">
-                        <h1>parar casamento</h1>
-
-                    </button>
-                                        <button class="-Services_booking_modal_choice_button">
-                        <h1>parar casamento</h1>
-
-                    </button>
-                                        <button class="-Services_booking_modal_choice_button">
-                        <h1>parar casamento</h1>
-
-                    </button>
-                                        <button class="-Services_booking_modal_choice_button">
-                        <h1>parar casamento</h1>
-
+                        <img />
+                        <div class="-Services_booking_modal_choice_button_info">
+                        <h1>Parar casamento</h1>
+                        <p>Penteados sofisticados para seu grande dia.</p>
+                        </div>
                     </button>
                 </div>
             </div>
@@ -143,7 +118,28 @@ const ImageTest = ref(`url(${Image})`);
         height: 90px;
         flex-shrink: 0;
 
+        display: flex;
+        gap: 16px;
+        padding: 10px;
+
         background-color: #FFFFFF;
         border: 1px solid #C9A66B;
+        border-radius: 10px;
+    }
+    .-Services_booking_modal_choice_button img{
+        width: 70px;
+        height: 70px;
+        background-color: #651F2A;
+    }
+    .-Services_booking_modal_choice_button_info{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .-Services_booking_modal_choice_button_info h1{
+        font-family: 'PLayfair display', serif;
+        font-size: 12px;
+        font-weight: bold;
     }
 </style>
