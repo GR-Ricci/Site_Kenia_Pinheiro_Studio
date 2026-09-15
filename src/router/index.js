@@ -27,9 +27,16 @@ const router = createRouter({
       component: () => import('@/views/contact/ContactView.vue'),
     },
     {
+      // Galeria pública — apenas exibe as fotos.
       path: '/gallery',
       name: 'GalleryView',
       component: () => import('@/views/gallery/GalleryView.vue'),
+    },
+    {
+      // Galeria administrativa — permite editar categorias e fotos.
+      path: '/adm/gallery',
+      name: 'AdmGalleryView',
+      component: () => import('@/views/gallery/Adm_GalleryView.vue'),
     },
     {
       path: '/example',
