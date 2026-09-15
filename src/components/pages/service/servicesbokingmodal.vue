@@ -1,28 +1,43 @@
 <script setup>
 import { ref } from 'vue';
 import Image from '@/assets/images/services/gugu.png';
+
+
 const ImageTest = ref(`url(${Image})`);
+const props = defineProps({
+    servico: Object
+})
+const emit = defineEmits(['close'])
 </script>
 
 <template>
     <section class="Services_booking_modal">
-        <div class="-Services_booking_modal_background">
+        <div class="-Services_booking_modal_background" @click.self="emit('close')">
             <div class="-Services_booking_modal">
                 <div class="-Services_booking_modal_image" :style="{'--card-image': ImageTest }">
                     <div class="-Services_booking_modal_image_text">
                     <p>SERVIÇO</p>
                     <h1>Penteados</h1>
                     </div>
-                </div>
+                    <div class="-Services_booking_modal_close">
+                    <i class="fa-solid fa-x"></i>
+                    </div>
+                </div>  
                 <div class="-Services_booking_modal_choice_p">
                     <p>Escolha a modalidade:</p>
                 </div>
                 <div class="-Services_booking_modal_choice">
                     <button class="-Services_booking_modal_choice_button">
-                        <img />
+                        <img :src="Image"/>
                         <div class="-Services_booking_modal_choice_button_info">
-                        <h1>Parar casamento</h1>
-                        <p>Penteados sofisticados para seu grande dia.</p>
+                            <h1>Parar casamento</h1>
+                            <p>Penteados sofisticados e duradouros para o seu grande dia.</p>
+                        </div>
+                        <div class="-Services_booking_modal_choice_button_price">
+                            <h1>
+                                R$ 150 - 350
+                            </h1>
+                            <i class="fa-solid fa-arrow-right"></i>
                         </div>
                     </button>
                 </div>
@@ -58,6 +73,13 @@ const ImageTest = ref(`url(${Image})`);
 
     .-Services_booking_modal_image{
         position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: end;
+        padding-right: 15px;
+        padding-left: 15px;
+        padding-bottom: 15px;
 
         width: 100%;
         height: 20%;
@@ -72,10 +94,8 @@ const ImageTest = ref(`url(${Image})`);
         border-bottom: 1px solid #C9A66B;
     }
       
-    .-Services_booking_modal_image_text{
-        position: absolute;
-        bottom: 15px;
-        left: 25px;
+    .-Services_booking_modal_image_text {
+        color: rgba(30,18,10,0.65);
     }
     .-Services_booking_modal_image h1{
         color: #651F2A;
@@ -130,6 +150,7 @@ const ImageTest = ref(`url(${Image})`);
         width: 70px;
         height: 70px;
         background-color: #651F2A;
+        object-fit: cover;
     }
     .-Services_booking_modal_choice_button_info{
         display: flex;
@@ -139,7 +160,32 @@ const ImageTest = ref(`url(${Image})`);
 
     .-Services_booking_modal_choice_button_info h1{
         font-family: 'PLayfair display', serif;
-        font-size: 12px;
+        font-size: 15px;
         font-weight: bold;
     }
+    .-Services_booking_modal_choice_button_info h1{
+        font-family: 'PLayfair display', serif;
+        font-size: 15px;
+        font-weight: bold;
+    }
+    .-Services_booking_modal_choice_button_info p{
+        color: #1E120A;
+        font-size: 15px;
+        text-align: left;
+    }
+    .-Services_booking_modal_choice_button_price {
+        display: flex;
+        width: 20%;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: right;
+        color: #C9A66B;
+    }
+    .-Services_booking_modal_close {
+    color: #1E120A65;
+    font-size: 15px;
+    cursor: pointer;
+    }
+
+  
 </style>

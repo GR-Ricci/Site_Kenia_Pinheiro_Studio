@@ -1,13 +1,43 @@
 <script setup>
 import { ref } from 'vue'
-
-const ActiveTag = ref(null);
+import ServicesBooking from '@/components/pages/service/servicesbokingmodal.vue';
 import Image from '@/assets/images/services/gugu.png';
 const ImageTest = ref(`url(${Image})`);
+const services = [
+  {
+    id: 1,
+    nome: 'Penteados',
+    descricao: 'Penteados para eventos e ocasiões especiais',
+    imagem: ImageTest
+  },
+  {
+    id: 2,
+    nome: 'Cortes',
+    descricao: 'Cortes femininos e manutenção',
+    imagem: ImageTest
+  },
+  {
+    id: 3,
+    nome: 'Coloração',
+    descricao: 'Coloração e procedimentos relacionados',
+    imagem: ImageTest
+  }
+]
+
+const ActiveTag = ref(null);
+
+const SelectedService = ref(null)
+
+
 
 function setActiveTag(tag) {
     ActiveTag.value = tag
 }
+
+function openBooking(services){
+    SelectedService.value = services;
+}
+
 </script>
 
 <template>
@@ -21,16 +51,22 @@ function setActiveTag(tag) {
                     <button @click="setActiveTag('eventos')" :class="{ active: ActiveTag === 'eventos'}"><span>Eventos</span></button>
             </div>
             <div class="-Services_Grid_Content">
-                <button class="-Services_Grid_Card">
+                <button class="-Services_Grid_Card" @click="openBooking(services[0])">
                     <div class="-Services_Grid_Card_Image" :style="{'--card-image': ImageTest }">
                         <h1>Penteados</h1>
                     </div>
                     <div class="-Services_Grid_Card_Info">
                         <h2>
-                            A partir de R$ 60
+                              A partir de R$ 60
                         </h2>
                     </div>
+                    
                 </button>
+                <ServicesBooking 
+                v-if="SelectedService"
+                :servico="SelectedService"
+                @close="SelectedService=null"
+                />
             </div>
         </div>
     </section>
