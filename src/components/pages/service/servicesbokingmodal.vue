@@ -17,10 +17,10 @@ const emit = defineEmits(['close'])
                 <div class="-Services_booking_modal_image" :style="{'--card-image': ImageTest }">
                     <div class="-Services_booking_modal_image_text">
                     <p>SERVIÇO</p>
-                    <h1>Penteados</h1>
+                    <h1>{{ servico.nome }}</h1>
                     </div>
-                    <div class="-Services_booking_modal_close">
-                    <i class="fa-solid fa-x"></i>
+                    <div class="-Services_booking_modal_close" >
+                    <i class="fa-solid fa-x" @click.self="emit('close')"></i>
                     </div>
                 </div>  
                 <div class="-Services_booking_modal_choice_p">
@@ -175,7 +175,7 @@ const emit = defineEmits(['close'])
     }
     .-Services_booking_modal_choice_button_price {
         display: flex;
-        width: 20%;
+        width: 25%;
         flex-direction: column;
         justify-content: space-between;
         text-align: right;
@@ -185,6 +185,7 @@ const emit = defineEmits(['close'])
     color: #1E120A65;
     font-size: 15px;
     cursor: pointer;
+    
     }
 
   

@@ -21,7 +21,17 @@ const services = [
     nome: 'Coloração',
     descricao: 'Coloração e procedimentos relacionados',
     imagem: ImageTest
-  }
+  },
+
+    {id: 4,
+    nome: 'Coloração',
+    descricao: 'Coloração e procedimentos relacionados',
+    imagem: ImageTest},
+
+    {id: 5,
+    nome: 'Coloração',
+    descricao: 'Coloração e procedimentos relacionados',
+    imagem: ImageTest}
 ]
 
 const ActiveTag = ref(null);
@@ -51,14 +61,22 @@ function openBooking(services){
                     <button @click="setActiveTag('eventos')" :class="{ active: ActiveTag === 'eventos'}"><span>Eventos</span></button>
             </div>
             <div class="-Services_Grid_Content">
-                <button class="-Services_Grid_Card" @click="openBooking(services[0])">
+                <button class="-Services_Grid_Card" 
+                @click="openBooking(services[services.id])"
+                v-for="service in services"
+                :key="service.id"
+                >
                     <div class="-Services_Grid_Card_Image" :style="{'--card-image': ImageTest }">
-                        <h1>Penteados</h1>
+                        <h1>{{ service.nome }}</h1>
                     </div>
                     <div class="-Services_Grid_Card_Info">
-                        <h2>
-                              A partir de R$ 60
-                        </h2>
+                        <div>
+                            <h2>A partir de R$ 60</h2>
+                            <p>{{ service.descricao }}</p>
+                        </div>
+                        
+                        <i class="fa-solid fa-arrow-right"></i>
+                        
                     </div>
                     
                 </button>
@@ -149,10 +167,15 @@ function openBooking(services){
 }
 
 .-Services_Grid_Content{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
     margin-top: 20px;
-    width: 900px;
+    width: 1080px;
     height: auto;
-    align-items: flex-start;
+    align-items: ce ;
+    overflow: hidden;
 }
 
 .-Services_Grid_Card{
@@ -160,7 +183,7 @@ function openBooking(services){
     flex-direction: column;
     overflow: hidden;  
     width: 250px;
-    aspect-ratio: 250/260;
+    aspect-ratio: 250/280;
     background:#FFFFFF;
     border: 1px solid #C9A66B;
     border-radius: 7px;
@@ -179,24 +202,30 @@ function openBooking(services){
     position: absolute;
     bottom: 12px;
     left: 12px;
-    color: #FAF7F2;
+    color: #000000;
     font-size: 18px;
     font-family: 'Playfair Display', serif;
     font-weight: bold;
 }
 .-Services_Grid_Card_Info{
+    display: flex;
+    flex-direction: row;
     align-content: center;
-    justify-content: left;
-    /*text-align: left;*/
+    height: auto;
+    padding: 7px;
+    font-size: 12px;
+    text-align: left;
     width: 100%;
     height: 20%;
     border-top: 1px solid #C9A66B;
-    
 }
-.-Services_Grid_Card_Info h1{
-    position:absolute;
-    bottom: 20px;
-    
+.-Services_Grid_Card_Info_Price{
+        display: flex;
+        width: 40%;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: right;
+        color: #C9A66B;
 }
 
 </style>
