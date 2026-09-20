@@ -5,8 +5,13 @@ import { whatsappLink } from '@/data/studio.js'
 
 <template>
   <section class="-section-hero">
-    <div class="-hero__bg" aria-hidden="true"></div>
-
+  <img
+         class="kenia__foto"
+          src="@/assets/images/home/cover01.jpeg"
+          alt="Kenia Pinheiro"
+          />
+    <div class="-hero__overlay" aria-hidden="true"></div>
+    
     <div class="-container">
       <div class="-hero__content">
         <span class="-hero__eyebrow">Sertãozinho · SP</span>
@@ -28,8 +33,6 @@ import { whatsappLink } from '@/data/studio.js'
             Agendar Horário
           </a>
 
-          
-          
         </div>
       </div>
     </div>
@@ -50,31 +53,29 @@ import { whatsappLink } from '@/data/studio.js'
   background: var(--kp-mahogany);
 }
 
-.-hero__bg {
+.kenia__foto {
   position: absolute;
-  inset: 0;
-  background-image: url('https://images.unsplash.com/photo-1589156191108-c762ff4b96ab?w=1600&q=80');
-  background-size: cover;
-  background-position: center right;
-  opacity: 0.6;
+  inset: 0;                 
+  width: 100%;
+  height: 100%;
+  object-fit: cover;        
+  object-position: center; 
+  z-index: 0;               
+  pointer-events: none;
+  
 }
 
-.-hero__bg::after {
-  content: '';
+.-hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to right,
-    var(--kp-mahogany) 0%,
-    rgba(61, 32, 16, 0.92) 35%,
-    rgba(61, 32, 16, 0.45) 65%,
-    transparent 100%
-  );
+  z-index: 1;
+  pointer-events: none;
+  background: rgba(61, 32, 16, 0.35);
 }
-
+ 
 .-container {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -84,6 +85,7 @@ import { whatsappLink } from '@/data/studio.js'
 .-hero__content {
   max-width: 540px;
   color: var(--kp-creme);
+  z-index: 2;
 }
 
 .-hero__eyebrow {
@@ -174,8 +176,6 @@ import { whatsappLink } from '@/data/studio.js'
   background: transparent;
   color: var(--kp-gold);
 }
-
-
 
 .-hero__scroll {
   position: absolute;
