@@ -1,37 +1,66 @@
 <script setup>
-import { ref , computed } from 'vue';
+import { ref, computed } from 'vue';
 import Image from '@/assets/images/services/gugu.png';
 
-
 const ImageTest = ref(`url(${Image})`);
+
 const props = defineProps({
     servico: Object,
     banco: Object
-})
+});
+
 const emit = defineEmits(['close']);
 
-const CurrentStep = ('profissional');
+const CurrentStep = ref('professional');
 const SelectedProfessional = ref(null);
-const SelectedSubserivce = ref(null);
-
-const AvaliableProfessionals = computed(() => {
-    
- 
-    const idsSubserviço = props.banco.idSubservice
-        .filter(sub => sub.id_subservico === props.servico.id)
-        .map(sub => sub.id)
+const SelectedSubservice = ref(null);
 
 
-    const idsProfissionais = props.banco.profissional_subservico
-        .filter(relacao => id_subservico.includes(relacao.id_subservico))
-        .map(relacao => relacao.id_profissional)
-    
-    return props.banco.profissionais.filter(prof => idsProfissionais
-        .includes(prof.id)
-    )
-})
+const AvailableProfessionals = computed(() => {
 
-function SelectProfessional
+    const idsSubservice = props.banco.subservicos
+        .filter(sub => sub.id_servico === props.servico.id)
+        .map(sub => sub.id);
+
+    const idsProfessionals = props.banco.profissional_subservico
+        .filter(relation =>
+            idsSubservice.includes(relation.id_subservico)
+        )
+        .map(relation => relation.id_profissional);
+
+    return props.banco.profissionais
+        .filter(prof =>
+            idsProfessionals.includes(prof.id)
+        );
+});
+
+function SelectProfessional(professional) {
+    SelectedProfessional.value = professional;
+    CurrentStep.value = 'subservice';
+}
+
+const AvailableSubservices = computed(() => {
+
+    if (!SelectedProfessional.value) return [];
+
+    const idsSubservice = props.banco.profissional_subservico
+        .filter(relation =>
+            relation.id_profissional === SelectedProfessional.value.id
+        )
+        .map(relation => relation.id_subservico);
+
+    return props.banco.subservicos
+        .filter(sub =>
+            sub.id_servico === props.servico.id &&
+            idsSubservice.includes(sub.id)
+        );
+});
+
+
+function SelectSubservice(subservice) {
+    SelectedSubservice.value = subservice;
+    CurrentStep.value = 'booking';
+}
 
 </script>
 
@@ -49,22 +78,48 @@ function SelectProfessional
                     </div>
                 </div>  
                 <div class="-Services_booking_modal_choice_p">
-                    <p>Escolha a modalidade:</p>
+                    <p v-if="CurrentStep == 'professional'">
+                        Escolha o profissional ideal para você.
+                    </p>
+                    <p v-else>
+                        Confira as modalidades disponiveis.
+                    </p>                    
                 </div>
                 <div class="-Services_booking_modal_choice">
-                    <button class="-Services_booking_modal_choice_button">
-                        <img :src="Image"/>
-                        <div class="-Services_booking_modal_choice_button_info">
-                            <h1>Parar casamento</h1>
-                            <p>Penteados sofisticados e duradouros para o seu grande dia.</p>
-                        </div>
-                        <div class="-Services_booking_modal_choice_button_price">
-                            <h1>
-                                R$ 150 - 350
-                            </h1>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </button>
+                    <template v-if="CurrentStep == 'professional'">
+                        <button class="-Services_booking_modal_choice_button"
+                            v-for="professional in AvailableProfessionals"
+                            :key="professional.id"
+                            @click="-SelectProfessional(professional)"
+                        >
+                            <img :src="Image"/>
+                            <div class="-Services_booking_modal_choice_button_info">
+                                <h1>{{ professional.nome }}</h1>
+                            </div>
+                            <div class="-Services_booking_modal_choice_button_price">
+                                <h1>
+                                </h1>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </div>
+                        </button>
+                    </template>
+                    <template v-if="CurrentStep == 'subservice'">
+                        <button class="-Services_booking_modal_choice_button"
+                            v-for="subservice in AvailableSubservices"
+                            :key="subservice.id"
+                            @click="-SelectSubservice(subservice)"
+                        >
+                            <img :src="Image"/>
+                            <div class="-Services_booking_modal_choice_button_info">
+                                <h1>{{ subservice.nome }}</h1>
+                            </div>
+                            <div class="-Services_booking_modal_choice_button_price">
+                                <h1>
+                                </h1>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </div>
+                        </button>
+                    </template>
                 </div>
             </div>
        </div>

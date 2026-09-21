@@ -1,77 +1,14 @@
 <script setup>
-import { ref } from 'vue'
+import { ref , computed } from 'vue'
 import ServicesBooking from '@/components/pages/service/servicesbokingmodal.vue';
+import bancoFake from '@/data/bancoFake.json'
 import Image from '@/assets/images/services/gugu.png';
 const ImageTest = ref(`url(${Image})`);
 
-const bancoFake = {
-  servicos: [
-    {
-      id: 1,
-      nome: 'Penteados',
-      descricao: 'Penteados para eventos',
-      imagem_url: Image
-    },
-    {
-      id: 2,
-      nome: 'Cortes',
-      descricao: 'Cortes femininos',
-      imagem_url: Image
-    }
-  ],
 
-  subservicos: [
-    {
-      id: 1,
-      id_servico: 1,
-      nome: 'Penteado simples'
-    },
-    {
-      id: 2,
-      id_servico: 1,
-      nome: 'Penteado casamento'
-    },
-    {
-      id: 3,
-      id_servico: 2,
-      nome: 'Corte feminino'
-    }
-  ],
-
-  profissionais: [
-    {
-      id: 1,
-      nome: 'Kênia'
-    },
-    {
-      id: 2,
-      nome: 'Ana'
-    }
-  ],
-
-  profissional_subservico: [
-    {
-      id_profissional: 1,
-      id_subservico: 1,
-      preco: 100,
-      duracao_minutos: 60
-    },
-    {
-      id_profissional: 1,
-      id_subservico: 2,
-      preco: 250,
-      duracao_minutos: 120
-    },
-    {
-      id_profissional: 2,
-      id_subservico: 1,
-      preco: 90,
-      duracao_minutos: 60
-    }
-  ]
-}
 
 const services = bancoFake.servicos;
+const categories = bancoFake.categorias;
 
 const ActiveTag = ref(null);
 
@@ -80,6 +17,14 @@ const SelectedService = ref(null)
 function setActiveTag(tag) {
     ActiveTag.value = tag
 }
+
+const FilteredServices = computed(() =>{
+    if(ActiveTag.value === null){
+        return services;
+    }
+    return services.filter(service => service.id_categoria === ActiveTag.value);
+
+});
 
 function openBooking(services){
     SelectedService.value = services;
@@ -92,15 +37,15 @@ function openBooking(services){
         <div class="-Services_Grid">
             <div class="-Services_Filter">
                     <button @click="setActiveTag(null)" :class="{ active: ActiveTag === null}"><span>Todos</span></button>
-                    <button @click="setActiveTag('cortes')" :class="{ active: ActiveTag === 'cortes'}"><span>Cabelos</span></button>
-                    <button @click="setActiveTag('manicure')" :class="{ active: ActiveTag === 'manicure'}"><span>Unhas</span></button>
-                    <button @click="setActiveTag('estetica')" :class="{ active: ActiveTag === 'estetica'}"><span>Estética</span></button>
-                    <button @click="setActiveTag('eventos')" :class="{ active: ActiveTag === 'eventos'}"><span>Eventos</span></button>
+                    <button v-for="categorie in categories"
+                            :key="categorie.id";
+                            @click="setActiveTag(categorie.id)" :class="{ active: ActiveTag === categorie.id }"    
+                    ><span>{{ categorie.nome }}</span></button>
             </div>
             <div class="-Services_Grid_Content">
                 <button class="-Services_Grid_Card" 
                 @click="openBooking(service)"
-                v-for="service in services"
+                v-for="service in FilteredServices"
                 :key="service.id"
                 >
                     <div class="-Services_Grid_Card_Image" :style="{'--card-image': ImageTest }">
@@ -108,7 +53,7 @@ function openBooking(services){
                     </div>
                     <div class="-Services_Grid_Card_Info">
                         <div class="-Service_Grid_Card_Info_group">
-                            <h2>Placeholder</h2>
+                            <h2></h2>
                             <p>{{ service.descricao }}</p>
                         </div>
                         <i class="fa-solid fa-arrow-right"></i>
