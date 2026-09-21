@@ -1,13 +1,38 @@
 <script setup>
-import { ref } from 'vue';
+import { ref , computed } from 'vue';
 import Image from '@/assets/images/services/gugu.png';
 
 
 const ImageTest = ref(`url(${Image})`);
 const props = defineProps({
-    servico: Object
+    servico: Object,
+    banco: Object
 })
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close']);
+
+const CurrentStep = ('profissional');
+const SelectedProfessional = ref(null);
+const SelectedSubserivce = ref(null);
+
+const AvaliableProfessionals = computed(() => {
+    
+ 
+    const idsSubserviço = props.banco.idSubservice
+        .filter(sub => sub.id_subservico === props.servico.id)
+        .map(sub => sub.id)
+
+
+    const idsProfissionais = props.banco.profissional_subservico
+        .filter(relacao => id_subservico.includes(relacao.id_subservico))
+        .map(relacao => relacao.id_profissional)
+    
+    return props.banco.profissionais.filter(prof => idsProfissionais
+        .includes(prof.id)
+    )
+})
+
+function SelectProfessional
+
 </script>
 
 <template>

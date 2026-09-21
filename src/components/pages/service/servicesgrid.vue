@@ -3,42 +3,79 @@ import { ref } from 'vue'
 import ServicesBooking from '@/components/pages/service/servicesbokingmodal.vue';
 import Image from '@/assets/images/services/gugu.png';
 const ImageTest = ref(`url(${Image})`);
-const services = [
-  {
-    id: 1,
-    nome: 'Penteados',
-    descricao: 'Penteados para eventos e ocasiões especiais',
-    imagem: ImageTest
-  },
-  {
-    id: 2,
-    nome: 'Cortes',
-    descricao: 'Cortes femininos e manutenção',
-    imagem: ImageTest
-  },
-  {
-    id: 3,
-    nome: 'Coloração',
-    descricao: 'Coloração e procedimentos relacionados',
-    imagem: ImageTest
-  },
 
-    {id: 4,
-    nome: 'Coloração',
-    descricao: 'Coloração e procedimentos relacionados',
-    imagem: ImageTest},
+const bancoFake = {
+  servicos: [
+    {
+      id: 1,
+      nome: 'Penteados',
+      descricao: 'Penteados para eventos',
+      imagem_url: Image
+    },
+    {
+      id: 2,
+      nome: 'Cortes',
+      descricao: 'Cortes femininos',
+      imagem_url: Image
+    }
+  ],
 
-    {id: 5,
-    nome: 'Coloração',
-    descricao: 'Coloração e procedimentos relacionados',
-    imagem: ImageTest}
-]
+  subservicos: [
+    {
+      id: 1,
+      id_servico: 1,
+      nome: 'Penteado simples'
+    },
+    {
+      id: 2,
+      id_servico: 1,
+      nome: 'Penteado casamento'
+    },
+    {
+      id: 3,
+      id_servico: 2,
+      nome: 'Corte feminino'
+    }
+  ],
+
+  profissionais: [
+    {
+      id: 1,
+      nome: 'Kênia'
+    },
+    {
+      id: 2,
+      nome: 'Ana'
+    }
+  ],
+
+  profissional_subservico: [
+    {
+      id_profissional: 1,
+      id_subservico: 1,
+      preco: 100,
+      duracao_minutos: 60
+    },
+    {
+      id_profissional: 1,
+      id_subservico: 2,
+      preco: 250,
+      duracao_minutos: 120
+    },
+    {
+      id_profissional: 2,
+      id_subservico: 1,
+      preco: 90,
+      duracao_minutos: 60
+    }
+  ]
+}
+
+const services = bancoFake.servicos;
 
 const ActiveTag = ref(null);
 
 const SelectedService = ref(null)
-
-
 
 function setActiveTag(tag) {
     ActiveTag.value = tag
@@ -62,7 +99,7 @@ function openBooking(services){
             </div>
             <div class="-Services_Grid_Content">
                 <button class="-Services_Grid_Card" 
-                @click="openBooking(services[services.id])"
+                @click="openBooking(service)"
                 v-for="service in services"
                 :key="service.id"
                 >
@@ -70,19 +107,17 @@ function openBooking(services){
                         <h1>{{ service.nome }}</h1>
                     </div>
                     <div class="-Services_Grid_Card_Info">
-                        <div>
-                            <h2>A partir de R$ 60</h2>
+                        <div class="-Service_Grid_Card_Info_group">
+                            <h2>Placeholder</h2>
                             <p>{{ service.descricao }}</p>
                         </div>
-                        
                         <i class="fa-solid fa-arrow-right"></i>
-                        
                     </div>
-                    
                 </button>
                 <ServicesBooking 
                 v-if="SelectedService"
                 :servico="SelectedService"
+                :banco="bancoFake"
                 @close="SelectedService=null"
                 />
             </div>
@@ -210,15 +245,21 @@ function openBooking(services){
 .-Services_Grid_Card_Info{
     display: flex;
     flex-direction: row;
-    align-content: center;
-    height: auto;
-    padding: 7px;
-    font-size: 12px;
-    text-align: left;
     width: 100%;
-    height: 20%;
+    padding: 7px;
+    justify-content: space-evenly;
+    font-size: 12px;
+
+    height: fit-content;
     border-top: 1px solid #C9A66B;
 }
+.-Service_Grid_Card_Info_group{
+    text-align: left;
+    width: 80%;
+    height: fit-content;
+
+}
+
 .-Services_Grid_Card_Info_Price{
         display: flex;
         width: 40%;
