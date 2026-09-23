@@ -1,12 +1,14 @@
-/* ─── Design tokens — KP Studio ───────────────────────────────────────────────
-   Extraídos do protótipo Figma Make (App.tsx, const C).
-   Não alterar valores sem alinhar com o protótipo. */
-
 :root {
   /* Paleta */
   --kp-vinho: #651f2a;
+  --kp-vinho-low: #651f2acc;
+
   --kp-gold: #c9a66b;
+  --kp-gold-low: #c9a66b80;
+
   --kp-creme: #f5ebdd;
+  --kp-creme-low: #f5ebdd90;
+
   --kp-mahogany: #3d2010;
   --kp-bg: #faf7f2;
   --kp-card-bg: #ffffff;
@@ -24,39 +26,45 @@
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
+  --text-base: 1.6rem;
+  --font-weight-medium: 500;
+
   /* Layout */
   --kp-nav-height: 56px;
 }
 
-/* ─── Base ────────────────────────────────────────────────────────────────────
-   Precisa ficar dentro de @layer base. Regra fora de camada vence qualquer
-   regra em camada, então um reset solto aqui anularia as utilidades do
-   Tailwind (margin, padding, etc.).
+html {
+  font-size: 62.5%;
+}
 
-   O preflight do Tailwind já zera margens, paddings e bordas, normaliza
-   button/a e põe display:block nas mídias. Abaixo fica só o que é do projeto. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-@layer base {
-  body {
-    min-height: 100vh;
-    background: var(--kp-bg);
-    color: var(--kp-text);
-    font-family: var(--font-body);
-    font-weight: 400;
-    line-height: 1.6;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+body {
+  min-height: 100vh;
+  background: var(--kp-bg);
+  color: var(--kp-text);
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  h1,
-  h2,
-  h3,
-  h4 {
-    line-height: 1.3;
-  }
+h1, h2, h3, h4 {
+  line-height: 1.3;
+}
 
-  button {
-    cursor: pointer;
-  }
+button {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+  cursor: pointer;
+
 }
