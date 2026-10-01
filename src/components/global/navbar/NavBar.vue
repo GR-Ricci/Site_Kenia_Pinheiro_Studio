@@ -23,6 +23,12 @@
 <style scoped>
 /* --------------footer geral----------------------------------------------------*/
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -50,10 +56,10 @@
   content: '•';
   margin-right: 0.4rem;
   color: var(--kp-gold-low);
-  visibility: hidden; 
+  visibility: hidden;
 }
 
-card:active {
+.card:active {
   color: var(--kp-gold-low);
 }
 
