@@ -5,7 +5,7 @@
     <header class="contact__header">
       <p class="contact__eyebrow">Estamos aqui para você</p>
       <h1 class="contact__title">Entre em Contato</h1>
-      <p class="contact__subtitle">Agende pelo WhatsApp, ligue ou venha nos visitar.</p>
+      <p class="contact__subtitle">Agende pelo WhatsApp, ou venha nos visitar!</p>
     </header>
 
     <div class="contact__content">
@@ -84,7 +84,7 @@
 
 .contact__eyebrow {
   font-family: var(--font-body);
-  font-size: 0.58rem;
+  font-size: 1rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--kp-gold);

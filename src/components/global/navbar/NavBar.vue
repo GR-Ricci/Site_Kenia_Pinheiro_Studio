@@ -1,10 +1,25 @@
-<script setup></script>
+<script setup>
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
+</script>
 
 <template>
   <div class="navbar">
-    <RouterLink to="/" class="navbar__icon">
-      <img src="@/assets/images/logo/logo.svg" alt="logo" />
-    </RouterLink>
+    <div class="left__area">
+      <RouterLink to="/" class="navbar__icon">
+        <img src="@/assets/images/logo/logo.svg" alt="logo" />
+      </RouterLink>
+      <div class="navbar__buttons">
+        <!-- <RouterLink v-if="authStore.token" to="/profile" class="card card--profile" active-class="card--active">Perfil</RouterLink> -->
+        <RouterLink to="/profile" class="card card--profile" active-class="card--active">Perfil</RouterLink>
+
+        <!-- <RouterLink to="/invite" class="card card--invite" active-class="card--active">Cadastrar usuario</RouterLink> -->
+        <RouterLink to="/invite" class="card card--invite" active-class="card--active">Cadastrar usuario</RouterLink>
+
+        <RouterLink to="/login" class="card card--profile" active-class="card--active">[Login - Temporario]</RouterLink>
+        <RouterLink to="/register" class="card card--profile" active-class="card--active">[Cadastro - Temporario]</RouterLink>
+      </div>
+    </div>
 
     <div class="navbar__buttons">
       <RouterLink to="/" class="card card--home" active-class="card--active">Início</RouterLink>
@@ -22,8 +37,9 @@
 
 <style scoped>
 /* --------------footer geral----------------------------------------------------*/
+
 .navbar {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -38,6 +54,11 @@
   border-bottom: 0.3rem solid var(--kp-gold);
 }
 
+.left__area {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
 /* --------------buttons ----------------------------------------------------*/
 
 .navbar__buttons {
@@ -45,9 +66,7 @@
   padding-left: 2rem;
   padding-right: 2rem;
   gap: 3rem;
-
   margin-right: 5rem;
-
   font-family: lato, sans-serif;
   color: var(--kp-creme-low);
 }

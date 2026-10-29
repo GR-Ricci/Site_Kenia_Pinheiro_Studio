@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/home/HomeView.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,18 +33,48 @@ const router = createRouter({
       name: 'GalleryView',
       component: () => import('@/views/gallery/GalleryView.vue'),
     },
-    {
-      // Galeria administrativa — permite editar categorias e fotos.
-      path: '/adm/gallery',
-      name: 'AdmGalleryView',
-      component: () => import('@/views/gallery/Adm_GalleryView.vue'),
-    },
+
     {
       path: '/example',
       name: 'ExampleView',
       component: () => import('@/views/example/ExampleView.vue'),
     },
+
+    //Meta
+    {
+      path: '/profile',
+      name: 'ProfileView',
+      component: () => import('@/views/profile/ProfileView.vue'),
+      meta: { requiresAuth: true },
+    },
+
+    {
+      path: '/invite',
+      name: 'InviteView',
+      component: () => import('@/views/invite/InviteView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/register',
+      name: 'RegisterView',
+      component: () => import('@/views/register/RegisterView.vue'),
+      //meta: { requiresAuth: true },
+    },
+    {
+      path: '/login',
+      name: 'LoginView',
+      component: () => import('@/views/login/LoginView.vue'),
+      //meta: { requiresAuth: true },
+    },
   ],
 })
+
+// router.beforeEach((to, from) => {
+//  const authStore = useAuthStore()
+
+//  if (to.meta.requiresAuth && !authStore.token) {
+//    return { path: '/' }
+//  }
+//})
 
 export default router
