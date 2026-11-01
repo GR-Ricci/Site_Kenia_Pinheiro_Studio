@@ -1,4 +1,30 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { apiFetch } from '@/client.js'
+
+const contato = ref(null)
+
+// links montados a partir do que está no banco:
+// telefone e WhatsApp ficam salvos sem o 55, ex: "(16) 99206-8812"; a rede social é o @ do Instagram
+const soNumeros = (texto) => texto.replace(/\D/g, '')
+const linkTelefone = (telefone) => `tel:+55${soNumeros(telefone)}`
+const linkWhatsapp = (whatsapp) => `https://wa.me/55${soNumeros(whatsapp)}`
+const linkEmail = (email) => `mailto:${email}`
+const linkInstagram = (perfil) => `https://instagram.com/${perfil.replace('@', '')}`
+const linkMapa = (endereco) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`
+
+async function carregarContato() {
+  try {
+    contato.value = await apiFetch('/contact')
+  } catch (erro) {
+    console.error('Erro ao buscar contato:', erro.message)
+  }
+}
+
+onMounted(() => {
+  carregarContato()
+})
+</script>
 
 <template>
   <div class="contact">
@@ -9,48 +35,48 @@
     </header>
 
     <div class="contact__content">
-      <div class="contact__list">
-        <a href="tel:+5516992068812" class="contact__item">
+      <div v-if="contato" class="contact__list">
+        <a v-if="contato.telefone" :href="linkTelefone(contato.telefone)" class="contact__item">
           <div class="contact__item-icon"><i class="fa-solid fa-phone"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">Telefone</p>
-            <p class="contact__item-value">(16) 99206-8812</p>
+            <p class="contact__item-value">{{ contato.telefone }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
 
-        <a href="https://wa.me/5516992068812" target="_blank" rel="noreferrer" class="contact__item">
+        <a v-if="contato.whatsapp" :href="linkWhatsapp(contato.whatsapp)" target="_blank" rel="noreferrer" class="contact__item">
           <div class="contact__item-icon"><i class="fa-brands fa-whatsapp"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">WhatsApp</p>
-            <p class="contact__item-value">(16) 99206-8812</p>
+            <p class="contact__item-value">{{ contato.whatsapp }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
 
-        <a href="mailto:keniapinheirostudio@gmail.com" class="contact__item">
+        <a v-if="contato.email" :href="linkEmail(contato.email)" class="contact__item">
           <div class="contact__item-icon"><i class="fa-solid fa-envelope"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">E-mail</p>
-            <p class="contact__item-value">keniapinheirostudio@gmail.com</p>
+            <p class="contact__item-value">{{ contato.email }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
 
-        <a href="https://instagram.com/keniapinheirostudio" target="_blank" rel="noreferrer" class="contact__item">
+        <a v-if="contato.rede_social" :href="linkInstagram(contato.rede_social)" target="_blank" rel="noreferrer" class="contact__item">
           <div class="contact__item-icon"><i class="fa-brands fa-instagram"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">Instagram</p>
-            <p class="contact__item-value">@keniapinheirostudio</p>
+            <p class="contact__item-value">{{ contato.rede_social }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
 
-        <a href="https://maps.google.com" target="_blank" rel="noreferrer" class="contact__item">
+        <a v-if="contato.endereco" :href="linkMapa(contato.endereco)" target="_blank" rel="noreferrer" class="contact__item">
           <div class="contact__item-icon"><i class="fa-solid fa-location-dot"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">Endereço</p>
-            <p class="contact__item-value">Rua Expedicionário Lellis, 1703 — Centro, Sertãozinho SP</p>
+            <p class="contact__item-value">{{ contato.endereco }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
