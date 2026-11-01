@@ -1,9 +1,70 @@
 <script setup>
+import { ref, onMounted } from 'vue'
+import { apiFetch } from '@/client.js'
 import GoldRule from '@/components/ui/GoldRule.vue'
 import TeamCard from '@/components/pages/about/TeamCard.vue'
-import { TEAM } from '@/data/studio'
+import logo from '@/assets/images/logo/logo.svg'
 
 const bannerImg = 'https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=1400&q=80'
+
+const DIAS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+const SEMANA = [1, 2, 3, 4, 5, 6, 0] // segunda primeiro, domingo por último
+
+const team = ref([])
+
+/**
+ * Jornada do banco -> texto do cartão, juntando dias seguidos com o mesmo horário.
+ * Ex.: "Seg – Sex · 09:00 – 18:00 | Sáb · 09:00 – 16:00"
+ */
+function formatarJornada(jornada) {
+  const horarioDoDia = {}
+  for (const turno of jornada) {
+    const faixa = `${turno.hora_inicio.slice(0, 5)} – ${turno.hora_fim.slice(0, 5)}`
+    horarioDoDia[turno.dia_semana] = horarioDoDia[turno.dia_semana]
+      ? `${horarioDoDia[turno.dia_semana]}, ${faixa}`
+      : faixa
+  }
+
+  const grupos = []
+  let grupo = null
+  for (const dia of SEMANA) {
+    const horario = horarioDoDia[dia]
+    if (grupo && horario === grupo.horario) {
+      grupo.fim = dia
+    } else {
+      grupo = horario ? { inicio: dia, fim: dia, horario } : null
+      if (grupo) grupos.push(grupo)
+    }
+  }
+
+  return grupos
+    .map(({ inicio, fim, horario }) => {
+      const dias = inicio === fim ? DIAS[inicio] : `${DIAS[inicio]} – ${DIAS[fim]}`
+      return `${dias} · ${horario}`
+    })
+    .join(' | ')
+}
+
+async function carregarEquipe() {
+  try {
+    const profissionais = await apiFetch('/employees')
+    // o banco ainda não guarda cargo nem Instagram: o cargo mostra as categorias que ela atende
+    team.value = profissionais.map((profissional) => ({
+      id: profissional.id,
+      name: profissional.nome,
+      role: profissional.categorias.join(' · '),
+      specialty: profissional.bio,
+      hours: formatarJornada(profissional.jornada),
+      img: profissional.imagem_url || logo,
+    }))
+  } catch (erro) {
+    console.error('Erro ao buscar equipe:', erro.message)
+  }
+}
+
+onMounted(() => {
+  carregarEquipe()
+})
 </script>
 
 <template>
@@ -27,7 +88,7 @@ const bannerImg = 'https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?
       <p class="about__section-label"><span class="about__bullet">•</span> Nossa equipe</p>
 
       <div class="about__team">
-        <TeamCard v-for="member in TEAM" :key="member.name" :member="member" />
+        <TeamCard v-for="member in team" :key="member.id" :member="member" />
       </div>
     </div>
   </div>
