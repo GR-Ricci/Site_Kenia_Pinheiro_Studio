@@ -1,12 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { apiFetch } from '@/client.js';
 import Image from '@/assets/images/services/gugu.png';
 
 const ImageTest = ref(`url(${Image})`);
 
 const props = defineProps({
-    servico: Object,
-    banco: Object
+    servico: Object
 });
 
 const emit = defineEmits(['close']);
@@ -16,22 +16,19 @@ const SelectedProfessional = ref(null);
 const SelectedSubservice = ref(null);
 
 
-const AvailableProfessionals = computed(() => {
+//profissionais que fazem este serviço; cada uma já vem do banco com os subserviços dela
+const AvailableProfessionals = ref([]);
 
-    const idsSubservice = props.banco.subservicos
-        .filter(sub => sub.id_servico === props.servico.id)
-        .map(sub => sub.id);
+async function LoadProfessionals() {
+    try {
+        AvailableProfessionals.value = await apiFetch(`/services/${props.servico.id}/employees`);
+    } catch (erro) {
+        console.error('Erro ao buscar profissionais:', erro.message);
+    }
+}
 
-    const idsProfessionals = props.banco.profissional_subservico
-        .filter(relation =>
-            idsSubservice.includes(relation.id_subservico)
-        )
-        .map(relation => relation.id_profissional);
-
-    return props.banco.profissionais
-        .filter(prof =>
-            idsProfessionals.includes(prof.id)
-        );
+onMounted(() => {
+    LoadProfessionals();
 });
 
 function SelectProfessional(professional) {
@@ -43,17 +40,7 @@ const AvailableSubservices = computed(() => {
 
     if (!SelectedProfessional.value) return [];
 
-    const idsSubservice = props.banco.profissional_subservico
-        .filter(relation =>
-            relation.id_profissional === SelectedProfessional.value.id
-        )
-        .map(relation => relation.id_subservico);
-
-    return props.banco.subservicos
-        .filter(sub =>
-            sub.id_servico === props.servico.id &&
-            idsSubservice.includes(sub.id)
-        );
+    return SelectedProfessional.value.subservicos;
 });
 
 

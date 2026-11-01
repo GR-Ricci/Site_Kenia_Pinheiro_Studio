@@ -1,14 +1,32 @@
 <script setup>
-import { ref , computed } from 'vue'
+import { ref , computed, onMounted } from 'vue'
+import { apiFetch } from '@/client.js'
 import ServicesBooking from '@/components/pages/service/servicesbokingmodal.vue';
-import bancoFake from '@/data/bancoFake.json'
 import Image from '@/assets/images/services/gugu.png';
 const ImageTest = ref(`url(${Image})`);
 
 
 
-const services = bancoFake.servicos;
-const categories = bancoFake.categorias;
+//categorias (botões de filtro) e serviços vêm do banco
+const services = ref([]);
+const categories = ref([]);
+
+async function loadServices() {
+    try {
+        const [dadosCategorias, dadosServicos] = await Promise.all([
+            apiFetch('/categories'),
+            apiFetch('/services'),
+        ]);
+        categories.value = dadosCategorias;
+        services.value = dadosServicos;
+    } catch (erro) {
+        console.error('Erro ao buscar serviços:', erro.message);
+    }
+}
+
+onMounted(() => {
+    loadServices();
+});
 
 const ActiveTag = ref(null);
 
@@ -20,9 +38,9 @@ function setActiveTag(tag) {
 
 const FilteredServices = computed(() =>{
     if(ActiveTag.value === null){
-        return services;
+        return services.value;
     }
-    return services.filter(service => service.id_categoria === ActiveTag.value);
+    return services.value.filter(service => service.id_categoria === ActiveTag.value);
 
 });
 
@@ -62,7 +80,6 @@ function openBooking(services){
                 <ServicesBooking 
                 v-if="SelectedService"
                 :servico="SelectedService"
-                :banco="bancoFake"
                 @close="SelectedService=null"
                 />
             </div>
