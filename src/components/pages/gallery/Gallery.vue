@@ -1,31 +1,37 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { useGalleryStore } from '@/stores/galleryAdm.js'
+import { ref, computed, onMounted } from 'vue'
+import { apiFetch } from '@/client.js'
 
 // Nome multi-palavra exigido pela regra do ESLint (vue/multi-word-component-names).
 defineOptions({
   name: 'GallerySection',
 })
 
-// Lê da mesma store que a versão Adm usa.
-const galleryStore = useGalleryStore()
+// Categorias (tags) e fotos vêm do banco.
+const categories = ref([])
+const items = ref([])
 
 // Categoria ativa no filtro.
-const activeCategory = ref(galleryStore.categories[0] ?? '')
+const activeCategory = ref('')
 
-// Se a categoria ativa sumir (removida), cai para a primeira da lista.
-watch(
-  () => galleryStore.categories,
-  (cats) => {
-    if (!cats.includes(activeCategory.value)) {
-      activeCategory.value = cats[0] ?? ''
-    }
-  },
-  { deep: true },
-)
+async function loadGallery() {
+  try {
+    const [tags, photos] = await Promise.all([apiFetch('/gallery/tags'), apiFetch('/gallery')])
+    categories.value = tags.map((tag) => tag.nome)
+    // Uma foto pode ter várias tags: ela aparece no filtro de cada uma.
+    items.value = photos.flatMap((photo) => photo.tags.map((tag) => ({ id: `${tag}-${photo.id}`, category: tag, image: photo.imagem_url })))
+    activeCategory.value = categories.value[0] ?? ''
+  } catch (erro) {
+    console.error('Erro ao buscar galeria:', erro.message)
+  }
+}
+
+onMounted(() => {
+  loadGallery()
+})
 
 // Itens visíveis — filtrados pela categoria ativa.
-const filteredItems = computed(() => galleryStore.allImages.filter((item) => item.category === activeCategory.value))
+const filteredItems = computed(() => items.value.filter((item) => item.category === activeCategory.value))
 </script>
 
 <template>
@@ -37,7 +43,7 @@ const filteredItems = computed(() => galleryStore.allImages.filter((item) => ite
       </header>
 
       <div class="-filters">
-        <button v-for="category in galleryStore.categories" :key="category" class="-filters__btn" :class="{ '-filters__btn--active': activeCategory === category }" @click="activeCategory = category">
+        <button v-for="category in categories" :key="category" class="-filters__btn" :class="{ '-filters__btn--active': activeCategory === category }" @click="activeCategory = category">
           {{ category }}
         </button>
       </div>
