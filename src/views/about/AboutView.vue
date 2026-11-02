@@ -20,9 +20,7 @@ function formatarJornada(jornada) {
   const horarioDoDia = {}
   for (const turno of jornada) {
     const faixa = `${turno.hora_inicio.slice(0, 5)} – ${turno.hora_fim.slice(0, 5)}`
-    horarioDoDia[turno.dia_semana] = horarioDoDia[turno.dia_semana]
-      ? `${horarioDoDia[turno.dia_semana]}, ${faixa}`
-      : faixa
+    horarioDoDia[turno.dia_semana] = horarioDoDia[turno.dia_semana] ? `${horarioDoDia[turno.dia_semana]}, ${faixa}` : faixa
   }
 
   const grupos = []
