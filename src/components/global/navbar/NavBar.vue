@@ -1,6 +1,15 @@
 <script setup>
-import { useAuthStore } from '@/stores/auth'
-const authStore = useAuthStore()
+//função vue url
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+import { useJwtStore } from '@/stores/jwt'
+const JwtStore = useJwtStore()
+
+function sair() {
+  JwtStore.logout()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -10,14 +19,11 @@ const authStore = useAuthStore()
         <img src="@/assets/images/logo/logo.svg" alt="logo" />
       </RouterLink>
       <div class="navbar__buttons">
-        <!-- <RouterLink v-if="authStore.token" to="/profile" class="card card--profile" active-class="card--active">Perfil</RouterLink> -->
-        <RouterLink to="/profile" class="card card--profile" active-class="card--active">Perfil</RouterLink>
-
-        <!-- <RouterLink to="/invite" class="card card--invite" active-class="card--active">Cadastrar usuario</RouterLink> -->
-        <RouterLink to="/invite" class="card card--invite" active-class="card--active">Cadastrar usuario</RouterLink>
-
+        <RouterLink v-if="JwtStore.token" to="/profile" class="card card--profile" active-class="card--active">Perfil</RouterLink>
+        <RouterLink v-if="JwtStore.token" to="/invite" class="card card--invite" active-class="card--active">Cadastrar usuario</RouterLink>
+        <button v-if="JwtStore.token" @click="sair" class="card card--logout">Sair</button>
         <RouterLink to="/login" class="card card--profile" active-class="card--active">[Login - Temporario]</RouterLink>
-        <RouterLink to="/register" class="card card--profile" active-class="card--active">[Cadastro - Temporario]</RouterLink>
+        <RouterLink v-if="JwtStore.token" to="/register" class="card card--profile" active-class="card--active">[Cadastro - Temporario]</RouterLink>
       </div>
     </div>
 
@@ -113,5 +119,16 @@ const authStore = useAuthStore()
 
 .navbar__icon:active {
   opacity: 100%;
+}
+
+.card--logout {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  display: inline;
 }
 </style>

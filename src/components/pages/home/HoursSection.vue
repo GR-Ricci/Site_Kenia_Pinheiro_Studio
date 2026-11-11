@@ -1,5 +1,25 @@
 <script setup>
-import { HOURS } from '@/data/studio.js'
+import { ref, onMounted } from 'vue'
+import { apiFetch } from '@/client.js'
+
+const DIAS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
+
+const dias = ref([])
+
+onMounted(async () => {
+  try {
+    const data = await apiFetch('/funcionamento')
+    console.log('FUNCIONAMENTO:', data)
+    dias.value = data.map((dia) => ({
+      dia: dia.dia,
+      label: DIAS[dia.dia],
+      time: dia.horarios.length === 0 ? 'Fechado' : dia.horarios.map((horario) => `${horario.abertura} - ${horario.fechamento}`).join(' / '),
+      closed: dia.horarios.length === 0,
+    }))
+  } catch (e) {
+    console.error('Erro ao carregar horários:', e)
+  }
+})
 </script>
 
 <template>
@@ -15,16 +35,16 @@ import { HOURS } from '@/data/studio.js'
 
       <div class="-hours__card">
         <div
-          v-for="(h, i) in HOURS"
-          :key="h.day"
+          v-for="(v, i) in dias"
+          :key="v.dia"
           class="-hours__row"
           :class="{
-            '-hours__row--closed': h.closed,
-            '-hours__row--alt': i % 2 === 1 && !h.closed,
+            '-hours__row--closed': v.closed,
+            '-hours__row--alt': i % 2 === 1 && !v.closed,
           }"
         >
-          <span class="-hours__day">{{ h.day }}</span>
-          <span class="-hours__time">{{ h.time }}</span>
+          <span class="-hours__day">{{ v.label }}</span>
+          <span class="-hours__time">{{ v.time }}</span>
         </div>
       </div>
     </div>

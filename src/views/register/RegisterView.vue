@@ -1,4 +1,62 @@
-<script setup></script>
+<script setup>
+import PasswordRules from '@/components/pages/register/PasswordRules.vue'
+import { ref, onMounted } from 'vue'
+import { apiFetch } from '@/client.js'
+import { useRoute, useRouter } from 'vue-router'
+
+//Flags Modularização
+const mostrarRegras = ref(false)
+
+//tratamento da url
+const router = useRouter() //direcionar url
+const route = useRoute() //pegar url
+const tokenDaUrl = route.query.token
+
+//submit
+const erroCadastro = ref('')
+const email = ref('')
+const senha = ref('')
+
+//API
+const convite_valido = ref({
+  valido: false,
+  tipo: '',
+  mensagem: '',
+})
+async function validar_token() {
+  try {
+    const dados = await apiFetch(`/invites/${tokenDaUrl}`)
+    convite_valido.value = dados
+  } catch (erro) {
+    console.error('Erro ao validar token:', erro.message)
+  }
+}
+onMounted(() => {
+  validar_token()
+})
+
+const cadastrado = ref({
+  email: '',
+  tipo: '',
+})
+async function cadastrar(senha, email) {
+  try {
+    const dados = await apiFetch('/cadastro', { method: 'POST', body: JSON.stringify({ token: tokenDaUrl, senha: senha, email: email }) })
+    cadastrado.value = dados
+    router.push('/login')
+  } catch (erro) {
+    // Se o back barrar (ex: e-mail já existe), a gente avisa no console e num alerta
+    if (!email || !senha) {
+      erroCadastro.value = 'E-mail e senha são obrigatórios.'
+    } else if (erro.campos && erro.campos.email) {
+      // Se for erro de Schema no e-mail (erro.campos existe e tem a chave 'email')
+      erroCadastro.value = 'Erro: Formato de e-mail inválido.'
+    } else {
+      erroCadastro.value = `Erro: ${erro.message}\nVerifique as regras da senha acima.`
+    }
+  }
+}
+</script>
 
 <template>
   <main class="access-page">
@@ -7,19 +65,27 @@
       <h1 class="access-card__title">Cadastrar</h1>
       <p class="access-card__description">Crie seu acesso para entrar no sistema.</p>
 
-      <form class="access-form">
+      <form v-if="convite_valido.valido" class="access-form" @submit.prevent="cadastrar(senha, email)">
         <label class="access-form__field">
           <span>E-mail</span>
-          <input type="email" placeholder="seuemail@exemplo.com" />
+          <input type="email" v-model="email" placeholder="seuemail@exemplo.com" />
         </label>
 
         <label class="access-form__field">
           <span>Senha</span>
-          <input type="password" placeholder="Crie uma senha" />
+          <input type="password" v-model="senha" placeholder="Crie uma senha" @focus="mostrarRegras = true" />
+          <PasswordRules v-if="mostrarRegras" :senha="senha" />
         </label>
 
-        <button class="access-form__button" type="button">Cadastrar</button>
+        <p v-if="erroCadastro" class="mensagem-erro">{{ erroCadastro }}</p>
+
+        <button class="access-form__button" type="submit">Cadastrar</button>
       </form>
+
+      <!-- tela de loading -->
+      <p v-else style="color: #c9a66b; text-align: center; margin-top: 2rem; font-size: 1.4rem">
+        {{ convite_valido.mensagem || 'Validando convite...' }}
+      </p>
     </section>
   </main>
 </template>
@@ -112,6 +178,16 @@
 
 .access-form__button:hover {
   background: var(--kp-creme);
+}
+
+.mensagem-erro {
+  color: #ff4d4d;
+  font-size: 1.2rem;
+  text-align: center;
+  opacity: 70%;
+  margin-top: -1rem; /* Puxa um pouco pra cima pra ficar perto do botão */
+  margin-bottom: -1rem;
+  white-space: pre-line;
 }
 
 @media (max-width: 600px) {

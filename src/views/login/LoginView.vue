@@ -1,4 +1,49 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+import { apiFetch } from '@/client.js'
+import { useRouter } from 'vue-router'
+import { useJwtStore } from '@/stores/jwt'
+
+const jwtStore = useJwtStore()
+const router = useRouter()
+
+//Login
+const email = ref('')
+const senha = ref('')
+const erroLogin = ref('')
+const login = ref({
+  access_token: '',
+  tipo: '',
+  id: '',
+})
+async function verificarLogin(email, senha) {
+  try {
+    const dados = await apiFetch('/login', { method: 'POST', body: JSON.stringify({ email: email, senha: senha }) })
+    login.value = dados
+
+    //Salvar jwt do return
+    localStorage.setItem('token', dados.access_token)
+    localStorage.setItem('id', dados.id)
+    localStorage.setItem('tipo', dados.tipo)
+
+    //Salvar jwt no store (Para não barrar o push, pois ele não deixa entrar devido ao guard, impedindo a função da pagina de buscar o jwt de sequer rodar)
+    jwtStore.token = dados.access_token
+    jwtStore.tipo = dados.tipo
+    jwtStore.id = dados.id
+
+    //Agora é seguro redirecionar
+    router.push('/profile')
+  } catch (erro) {
+    console.error('Erro ao logar', erro.message)
+
+    if (!email || !senha) {
+      erroLogin.value = 'E-mail e senha são obrigatórios!'
+    } else {
+      erroLogin.value = `${erro.message}`
+    }
+  }
+}
+</script>
 
 <template>
   <main class="access-page">
@@ -7,18 +52,19 @@
       <h1 class="access-card__title">Entrar</h1>
       <p class="access-card__description">Acesse sua conta para continuar.</p>
 
-      <form class="access-form">
+      <form class="access-form" @submit.prevent="verificarLogin(email, senha)">
         <label class="access-form__field">
           <span>E-mail</span>
-          <input type="email" placeholder="seuemail@exemplo.com" />
+          <input type="email" v-model="email" placeholder="seuemail@exemplo.com" />
         </label>
-
         <label class="access-form__field">
           <span>Senha</span>
-          <input type="password" placeholder="Digite sua senha" />
+          <input type="password" v-model="senha" placeholder="Digite sua senha" />
         </label>
 
-        <button class="access-form__button" type="button">Entrar</button>
+        <p v-if="erroLogin" class="mensagem-erro">{{ erroLogin }}</p>
+
+        <button class="access-form__button" type="submit">Entrar</button>
       </form>
     </section>
   </main>
@@ -122,5 +168,16 @@
   .access-card {
     padding: 2.4rem 1.8rem;
   }
+}
+
+/* Erros */
+
+.input-erro {
+  border-color: #ff4d4d !important;
+  background-color: #ffe6e6;
+}
+.mensagem-erro {
+  color: #ff4d4d;
+  font-size: 1.3rem;
 }
 </style>

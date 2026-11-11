@@ -1,30 +1,59 @@
 <script setup>
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
-import { CAROUSEL_CATS } from '@/data/services.js'
+import { ref, onMounted } from 'vue'
+import { useRouter, RouterLink } from 'vue-router'
+import { apiFetch } from '@/client.js'
 
-const total = CAROUSEL_CATS.length
+const router = useRouter()
+
+const carrosselCats = ref([])
 const activeIndex = ref(0)
+const total = ref(0)
+
+onMounted(async () => {
+  try {
+    const data = await apiFetch('/carrossel')
+    carrosselCats.value = data
+    total.value = data.length
+  } catch (e) {
+    console.error('Erro ao carregar carrossel:', e)
+  }
+})
+
+function urlImagem(imagem_url) {
+  if (!imagem_url) return null
+  if (imagem_url.startsWith('http')) return imagem_url
+  return `${import.meta.env.VITE_API_URL}/upload/carrossel/${imagem_url}`
+}
 
 function next() {
-  activeIndex.value = (activeIndex.value + 1) % total
+  if (total.value === 0) return
+  activeIndex.value = (activeIndex.value + 1) % total.value
 }
 
 function prev() {
-  activeIndex.value = (activeIndex.value - 1 + total) % total
+  if (total.value === 0) return
+  activeIndex.value = (activeIndex.value - 1 + total.value) % total.value
 }
 
 function goTo(index) {
   activeIndex.value = index
 }
 
-// Diz se um card é o ativo, o vizinho anterior, o próximo ou nenhum.
 function positionOf(index) {
-  const diff = (index - activeIndex.value + total) % total
+  const diff = (index - activeIndex.value + total.value) % total.value
   if (diff === 0) return 'active'
   if (diff === 1) return 'next'
-  if (diff === total - 1) return 'prev'
+  if (diff === total.value - 1) return 'prev'
   return 'hidden'
+}
+
+function handleCardClick(index) {
+  if (positionOf(index) === 'active') {
+    const cat = carrosselCats.value[index]
+    router.push({ path: '/services', query: { categoria: cat.id_categoria } })
+  } else {
+    goTo(index)
+  }
 }
 </script>
 
@@ -39,50 +68,30 @@ function positionOf(index) {
         </div>
       </header>
 
-      <div class="-carousel">
-        <button
-          class="-carousel__arrow -carousel__arrow--prev"
-          type="button"
-          aria-label="Anterior"
-          @click="prev"
-        >
-          <i class="fas fa-chevron-left"></i>
-        </button>
+      <p v-if="total === 0" class="empty-text">Nenhuma categoria cadastrada ainda.</p>
 
-        <div class="-carousel__stage">
-          <div
-            v-for="(cat, i) in CAROUSEL_CATS"
-            :key="cat.label"
-            class="-carousel__card"
-            :class="`-carousel__card--${positionOf(i)}`"
-            @click="goTo(i)"
-          >
-            <img :src="cat.img" :alt="cat.label" class="-carousel__image" />
-            <span class="-carousel__label">{{ cat.label }}</span>
+      <template v-else>
+        <div class="-carousel">
+          <button class="-carousel__arrow -carousel__arrow--prev" type="button" aria-label="Anterior" @click="prev">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+
+          <div class="-carousel__stage">
+            <div v-for="(v, i) in carrosselCats" :key="v.id" class="-carousel__card" :class="`-carousel__card--${positionOf(i)}`" @click="handleCardClick(i)">
+              <img :src="urlImagem(v.imagem_url)" :alt="v.nome_categoria" class="-carousel__image" />
+              <span class="-carousel__label">{{ v.nome_categoria }}</span>
+            </div>
           </div>
+
+          <button class="-carousel__arrow -carousel__arrow--next" type="button" aria-label="Próximo" @click="next">
+            <i class="fas fa-chevron-right"></i>
+          </button>
         </div>
 
-        <button
-          class="-carousel__arrow -carousel__arrow--next"
-          type="button"
-          aria-label="Próximo"
-          @click="next"
-        >
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-
-      <div class="-services__dots">
-        <button
-          v-for="(cat, i) in CAROUSEL_CATS"
-          :key="cat.label"
-          class="-services__dot"
-          :class="{ '-services__dot--active': i === activeIndex }"
-          type="button"
-          :aria-label="`Ir para ${cat.label}`"
-          @click="goTo(i)"
-        ></button>
-      </div>
+        <div class="-services__dots">
+          <button v-for="(v, i) in carrosselCats" :key="v.id" class="-services__dot" :class="{ '-services__dot--active': i === activeIndex }" type="button" :aria-label="`Ir para ${v.nome_categoria}`" @click="goTo(i)"></button>
+        </div>
+      </template>
 
       <div class="-services__cta">
         <RouterLink to="/services" class="-services__btn">
@@ -189,7 +198,7 @@ function positionOf(index) {
   opacity: 1;
   filter: blur(0);
   z-index: 3;
-  cursor: default;
+  cursor: pointer;
   pointer-events: auto;
 }
 
@@ -300,5 +309,16 @@ function positionOf(index) {
 .-services__btn:hover {
   background: var(--kp-vinho);
   color: var(--kp-creme);
+}
+
+/* --- Vazio --- */
+.empty-text {
+  text-align: center;
+  color: var(--kp-text-soft);
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  font-style: italic;
+  padding: 4rem 0;
+  margin-bottom: 4rem;
 }
 </style>

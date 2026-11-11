@@ -1,4 +1,27 @@
-<script setup></script>
+<script setup>
+import ModalShare from '@/components/pages/invite/ModalShare.vue'
+import { apiFetch } from '@/client.js'
+import { ref } from 'vue'
+
+//Flag Modularização
+const modalAberto = ref(false)
+
+// -> Criar Convite
+const convite = ref({
+  token: '',
+  link: '',
+  expira_em: '',
+})
+async function gerarConvite(tipo) {
+  try {
+    const dados = await apiFetch('/invites', { method: 'POST', body: JSON.stringify({ tipo: tipo }) })
+    convite.value = dados
+  } catch (erro) {
+    console.error('Erro ao gerar convite', erro.message)
+    convite.value.link = 'Erro ao gerar convite'
+  }
+}
+</script>
 
 <template>
   <main class="invite">
@@ -7,18 +30,22 @@
       <h1 class="invite__title">Gerar convite</h1>
       <p class="invite__description">Escolha o tipo de profissional que deseja cadastrar.</p>
 
+      <!-- prettier-ignore -->
       <div class="invite__options">
-        <button class="invite__option" type="button">
+
+        <button class="invite__option" type="button" @click="modalAberto = true; gerarConvite('PROFISSIONAL')">
           <span class="invite__option-title">Profissional - Comum</span>
           <span class="invite__option-description"> Acesso apenas às funções relacionadas ao próprio perfil. </span>
         </button>
 
-        <button class="invite__option" type="button">
+        <button class="invite__option" type="button" @click="modalAberto = true; gerarConvite('ADMIN')">
           <span class="invite__option-title">Profissional - Administrador</span>
           <span class="invite__option-description"> Acesso às configurações e ao gerenciamento do espaço. </span>
         </button>
       </div>
     </section>
+
+    <ModalShare :modal-aberto="modalAberto" :convite="convite.link" @close="modalAberto = false" />
   </main>
 </template>
 

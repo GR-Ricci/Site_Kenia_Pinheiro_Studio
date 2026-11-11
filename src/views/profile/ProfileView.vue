@@ -1,20 +1,19 @@
 <script setup>
-localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwidGlwbyI6IkFETUlOIiwiZXhwIjoxNzkzODkxMjI3fQ.kHdW7TE1HGlHoxIL5JvG4w-fUQtd-nbRd90yN8di6nE')
-
-//Imports para trazer dados do banco
+import UpdateModal from '@/components/pages/profile/UpdateModal.vue'
+import ButtonProfissional from '@/components/pages/profile/ButtonProfissional.vue'
+import ButtonAdmin from '@/components/pages/profile/ButtonAdmin.vue'
 import { ref, onMounted } from 'vue'
 import { apiFetch } from '@/client.js'
 
-//Imports para Store e StoreGuard
-import { useAuthStore } from '@/stores/auth'
-const authStore = useAuthStore()
+//Flags Modularização
+const modalEdicao = ref(false)
 
+//Preencher perfil
 const perfil = ref({
   nome: '',
   bio: '',
   imagem_url: '',
 })
-
 async function carregarPerfil() {
   try {
     const dados = await apiFetch('/profile')
@@ -23,17 +22,29 @@ async function carregarPerfil() {
     console.error('Erro ao buscar perfil:', erro.message)
   }
 }
-
 onMounted(() => {
   carregarPerfil()
 })
+
+//Preencher Modal
+const perfilEditado = ref({
+  nome: '',
+  bio: '',
+  imagem_url: '',
+})
+function abrirEdicao() {
+  perfilEditado.value.nome = perfil.value.nome
+  perfilEditado.value.bio = perfil.value.bio
+  perfilEditado.value.imagem_url = perfil.value.imagem_url
+  modalEdicao.value = true
+}
 </script>
 
 <template>
   <main class="profile">
     <section class="profile__card">
       <div class="profile__photo-box">
-        <img class="profile__photo" :src="perfil.imagem_url" alt="Foto da profissional" />
+        <img class="profile__photo" :src="`http://localhost:8000/upload/perfil/${perfil.imagem_url}?t=${Date.now()}`" alt="Foto da profissional" />
       </div>
 
       <div class="profile__info">
@@ -41,19 +52,13 @@ onMounted(() => {
         <p class="profile__person">{{ perfil.nome }}</p>
         <p class="profile__bio">{{ perfil.bio }}</p>
       </div>
+
+      <button @click="abrirEdicao" class="btn-editar">Editar</button>
+      <UpdateModal :modal-edicao="modalEdicao" :perfil-editado="perfilEditado" @saved="perfil = $event" @close="modalEdicao = false" />
     </section>
 
-    <section class="profile__options">
-      <button class="profile__button" type="button">Cadastrar serviços, subserviço e escolher categoria</button>
-      <button class="profile__button" type="button">Cadastrar horários</button>
-    </section>
-
-    <!-- <section v-if="authStore.tipo === 'ADMIN'" class="profile__admin__options"> -->
-    <section class="profile__admin__options">
-      <button class="profile__button" type="button">Cadastrar Categoria - Se for admin</button>
-      <button class="profile__button" type="button">Gerenciar galeria e colocar tags - Se for admin</button>
-      <button class="profile__button" type="button">Historico de funcionarios - Se for adminn</button>
-    </section>
+    <ButtonProfissional />
+    <ButtonAdmin />
   </main>
 </template>
 
@@ -64,9 +69,7 @@ onMounted(() => {
   background: var(--kp-bg);
 }
 
-.profile__card,
-.profile__options,
-.profile__admin__options {
+.profile__card {
   width: min(92rem, 100%);
   margin: 0 auto;
   border: 1px solid var(--kp-gold-border);
@@ -103,8 +106,7 @@ onMounted(() => {
 .profile__name {
   color: var(--kp-creme);
   font-family: var(--font-display), sans-serif;
-  font-size: clamp(2.8rem, 5vw, 4.8rem);
-  font-weight: 500;
+  font-size: clamp(2.8rem, 5vw, 3.8rem);
 }
 
 .profile__bio {
@@ -117,41 +119,29 @@ onMounted(() => {
 .profile__person {
   margin-top: 0.6rem;
   color: var(--kp-gold);
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
-.profile__options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-  margin-top: 2rem;
-  padding: 2rem;
-  background: rgba(245, 235, 221, 0.3);
-  border-style: dashed;
+.profile__card {
+  position: relative; /* Adicione isso para o botão se posicionar em relação ao card */
+  /* ... seus outros estilos (display: flex, background, etc) ... */
 }
 
-.profile__admin__options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-  margin-top: 2rem;
-  padding: 2rem;
-  background: rgba(245, 235, 221, 0.3);
-  border-style: dashed;
-}
-
-.profile__button {
-  border: 1px solid var(--kp-gold-border);
-  border-radius: 99rem;
-  padding: 0.9rem 2rem;
+.btn-editar {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  padding: 0.8rem 1.6rem;
+  background: var(--kp-gold);
   color: var(--kp-vinho);
-  background: var(--kp-card-bg);
-  font-family: var(--font-body), sans-serif;
-  font-size: 1.35rem;
+  border: none;
+  border-radius: 99rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-.profile__button:hover {
-  border-color: var(--kp-gold);
-  background: var(--kp-creme);
+.btn-editar:hover {
+  opacity: 0.8;
 }
 </style>

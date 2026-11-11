@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/home/HomeView.vue'
-import { useAuthStore } from '@/stores/auth'
+import { useJwtStore } from '@/stores/jwt'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -70,11 +70,14 @@ const router = createRouter({
 })
 
 // router.beforeEach((to, from) => {
-//  const authStore = useAuthStore()
+//  const JwtStore = useJwtStore()
 
-//  if (to.meta.requiresAuth && !authStore.token) {
+//  if (to.meta.requiresAuth && !JwtStore.token) {
 //    return { path: '/' }
 //  }
+
+//  if (to.path === '/register' && !to.query.token) {
+//    return { path: '/' }
 //})
 
 export default router
