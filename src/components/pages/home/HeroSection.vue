@@ -1,17 +1,34 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import { whatsappLink } from '@/data/studio.js'
+
+const homeImagem = ref(null)
+
+async function carregarHome() {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/home`)
+    const dados = await res.json()
+    console.log('GET /home respondeu:', dados)
+    if (dados.imagem_url) {
+      homeImagem.value = `${import.meta.env.VITE_API_URL}/upload/home/${dados.imagem_url}?v=${dados.atualizado_em}`
+      console.log('URL final:', homeImagem.value)
+    } else {
+      console.log('Sem imagem no servidor — usando default')
+    }
+  } catch (e) {
+    console.error('Erro ao carregar home:', e)
+  }
+}
+
+onMounted(carregarHome)
 </script>
 
 <template>
   <section class="-section-hero">
-  <img
-         class="kenia__foto"
-          src="@/assets/images/home/cover01.jpeg"
-          alt="Kenia Pinheiro"
-          />
+    <img v-if="homeImagem" class="kenia__foto" :src="homeImagem" alt="Kenia Pinheiro" />
+    <img v-else class="kenia__foto" src="@/assets/images/home/cover01.jpeg" alt="Kenia Pinheiro" />
     <div class="-hero__overlay" aria-hidden="true"></div>
-    
+
     <div class="-container">
       <div class="-hero__content">
         <span class="-hero__eyebrow">Sertãozinho · SP</span>
@@ -19,20 +36,10 @@ import { whatsappLink } from '@/data/studio.js'
         <h1 class="-hero__logo">Kp</h1>
         <span class="-hero__studio">Studio</span>
 
-        <p class="-hero__subtitle">
-          Especialistas em realizar a beleza natural dos seus cachos
-        </p>
+        <p class="-hero__subtitle">Especialistas em realizar a beleza natural dos seus cachos</p>
 
         <div class="-hero__actions">
-          <a
-            :href="whatsappLink()"
-            target="_blank"
-            rel="noopener"
-            class="-hero__btn -hero__btn--filled"
-          >
-            Agendar Horário
-          </a>
-
+          <a :href="whatsappLink()" target="_blank" rel="noopener" class="-hero__btn -hero__btn--filled"> Agendar Horário </a>
         </div>
       </div>
     </div>
@@ -55,14 +62,13 @@ import { whatsappLink } from '@/data/studio.js'
 
 .kenia__foto {
   position: absolute;
-  inset: 0;                 
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;        
-  object-position: center; 
-  z-index: 0;               
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
   pointer-events: none;
-  
 }
 
 .-hero__overlay {
@@ -72,7 +78,7 @@ import { whatsappLink } from '@/data/studio.js'
   pointer-events: none;
   background: rgba(61, 32, 16, 0.35);
 }
- 
+
 .-container {
   position: relative;
   z-index: 2;
