@@ -24,14 +24,15 @@ const abrirEditorWallpaper = ref(false)
   <section v-if="jwtStore.tipo === 'ADMIN'" class="profile__admin__options">
     <button @click="abrirCadastro = true" class="profile__button">Categorias e Serviços</button>
     <button @click="abrirFuncionarios = true" class="profile__button">Funcionários</button>
-    <button @click="abrirEditorWallpaper = true" class="profile__button">Editar Imagem Principal</button>
+    <button @click="editarHorario = true" class="profile__button">Horários</button>
+    <button @click="editarContato = true" class="profile__button">Contato</button>
   </section>
 
   <section v-if="jwtStore.tipo === 'ADMIN'" class="profile__admin__options">
+    <button @click="editarCarrossel = true" class="profile__button">Carrossel</button>
     <button @click="abrirGaleria = true" class="profile__button">Galeria</button>
     <button @click="editarCarrossel = true" class="profile__button">Carrossel</button>
-    <button @click="editarHorario = true" class="profile__button">Horários</button>
-    <button @click="editarContato = true" class="profile__button">Contato</button>
+    <button @click="abrirEditorWallpaper = true" class="profile__button">Imagem Início</button>
   </section>
 
   <CategoryService :abrir-cadastro="abrirCadastro" @fechar="abrirCadastro = false" />

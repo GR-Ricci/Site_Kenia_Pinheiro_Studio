@@ -7,69 +7,51 @@ const props = defineProps({
 })
 const emit = defineEmits(['fechar'])
 
-// ==========================================================
-// ESTADO PRINCIPAL
-// ==========================================================
 const tipoUsuario = ref('')
 const idUsuarioLogado = ref(null)
-
 const profissionais = ref([])
 const idProfSelecionado = ref(null)
-const nomeProfSelecionada = ref('')
+const nomeProfSelecionada = ref(null)
 const meuIdProfissional = ref(null)
-
 const vinculos = ref([])
 const carregando = ref(false)
 
-// Edição inline
 const vinculoEditando = ref(null)
 const formPreco = ref('')
 const formDuracao = ref(30)
 const formAtivo = ref(true)
 const formFileFoto = ref(null)
 const formPreviewFoto = ref(null)
-const inputFotoRef = ref(null)
+const formDescricao = ref('')
 
-// ==========================================================
-// ESTADO DO SUB-MODAL "TROCAR"
-// ==========================================================
-const trocando = ref(null) // { id_profissional, id_subservico_atual, nome_subservico_atual }
+const trocando = ref(null)
 const todosSubservicos = ref([])
 const todosServicos = ref([])
-
 const trocaTermoBusca = ref('')
 const trocaListaAberta = ref(false)
 const trocaSubservicoSelecionado = ref(null)
 const trocaServicoSelecionado = ref(null)
 const trocaListaServAberta = ref(false)
 const trocaMostrarForm = ref(false)
-
 const trocaFileFoto = ref(null)
 const trocaPreviewFoto = ref(null)
-const trocaInputFotoRef = ref(null)
 const trocaPreco = ref('')
 const trocaDuracao = ref(30)
+const trocaDescricao = ref('')
 
-// Filtro inteligente (OR por palavra)
+const modalDescricaoAberto = ref(false)
+const descricaoRascunho = ref('')
+const contextoDescricao = ref(null)
+const limiteDescricao = 300
+
 const trocaSubservicosFiltrados = computed(() => {
   const termo = trocaTermoBusca.value.trim().toLowerCase()
   if (!termo) return todosSubservicos.value
   const palavras = termo.split(/\s+/).filter(Boolean)
-  return todosSubservicos.value.filter((s) =>
-    palavras.some((p) => s.nome.toLowerCase().includes(p))
-  )
+  return todosSubservicos.value.filter((s) => palavras.some((p) => s.nome.toLowerCase().includes(p)))
 })
 
-// ==========================================================
-// HELPERS
-// ==========================================================
 function urlImagem(imagem_url) {
-  if (!imagem_url) return null
-  if (imagem_url.startsWith('http')) return imagem_url
-  return `${import.meta.env.VITE_API_URL}/upload/profissional_subservico/${imagem_url}`
-}
-
-function urlImagemTroca(imagem_url) {
   if (!imagem_url) return null
   if (imagem_url.startsWith('http')) return imagem_url
   return `${import.meta.env.VITE_API_URL}/upload/profissional_subservico/${imagem_url}`
@@ -92,15 +74,12 @@ function decodificarToken() {
   }
 }
 
-// ==========================================================
-// CARREGAMENTO
-// ==========================================================
 async function carregarStaff() {
   try {
     const staff = await apiFetch('/staff')
     profissionais.value = staff.filter((s) => s.id_profissional)
   } catch (e) {
-    console.error('Erro ao carregar staff:', e)
+    console.error(e)
   }
 }
 
@@ -110,7 +89,6 @@ async function carregarMe() {
     meuIdProfissional.value = me.id_profissional
     return me.id_profissional
   } catch (e) {
-    console.error('Erro ao carregar /staff/me:', e)
     return null
   }
 }
@@ -124,22 +102,17 @@ async function carregarVinculos() {
   try {
     vinculos.value = await apiFetch(`/profissional-subservicos/${idProfSelecionado.value}`)
   } catch (e) {
-    console.error('Erro ao carregar vínculos:', e)
     vinculos.value = []
   } finally {
     carregando.value = false
   }
 }
 
-// ==========================================================
-// INICIALIZAÇÃO
-// ==========================================================
 async function inicializar() {
   if (!decodificarToken()) {
     emit('fechar')
     return
   }
-
   if (tipoUsuario.value === 'ADMIN') {
     await carregarStaff()
     if (profissionais.value.length > 0) {
@@ -150,7 +123,6 @@ async function inicializar() {
     const id = await carregarMe()
     if (id) idProfSelecionado.value = id
   }
-
   await carregarVinculos()
 }
 
@@ -165,7 +137,7 @@ watch(
       resetar()
       inicializar()
     }
-  }
+  },
 )
 
 watch(idProfSelecionado, async (novo, antigo) => {
@@ -177,23 +149,32 @@ watch(idProfSelecionado, async (novo, antigo) => {
   }
 })
 
-// ==========================================================
-// EDIÇÃO INLINE
-// ==========================================================
+function abrirModalDescricao(contexto, textoAtual) {
+  contextoDescricao.value = contexto
+  descricaoRascunho.value = textoAtual || ''
+  modalDescricaoAberto.value = true
+}
+
+function salvarDescricao() {
+  const texto = descricaoRascunho.value.trim()
+  if (contextoDescricao.value === 'inline') formDescricao.value = texto
+  else if (contextoDescricao.value === 'troca') trocaDescricao.value = texto
+  modalDescricaoAberto.value = false
+}
+
+function cancelarDescricao() {
+  modalDescricaoAberto.value = false
+}
+
 function abrirEdicao(v) {
-  vinculoEditando.value = {
-    id_profissional: v.id_profissional,
-    id_subservico: v.id_subservico,
-  }
+  vinculoEditando.value = { id_profissional: v.id_profissional, id_subservico: v.id_subservico }
   formPreco.value = v.preco
   formDuracao.value = v.duracao_minutos
   formAtivo.value = v.ativo
+  formDescricao.value = v.descricao || ''
   formFileFoto.value = null
-  if (formPreviewFoto.value?.startsWith('blob:')) {
-    URL.revokeObjectURL(formPreviewFoto.value)
-  }
+  if (formPreviewFoto.value?.startsWith('blob:')) URL.revokeObjectURL(formPreviewFoto.value)
   formPreviewFoto.value = v.imagem_url ? urlImagem(v.imagem_url) : null
-  if (inputFotoRef.value) inputFotoRef.value.value = ''
 }
 
 function cancelarEdicao() {
@@ -201,22 +182,19 @@ function cancelarEdicao() {
   formPreco.value = ''
   formDuracao.value = 30
   formAtivo.value = true
+  formDescricao.value = ''
   formFileFoto.value = null
-  if (formPreviewFoto.value?.startsWith('blob:')) {
-    URL.revokeObjectURL(formPreviewFoto.value)
-  }
+  if (formPreviewFoto.value?.startsWith('blob:')) URL.revokeObjectURL(formPreviewFoto.value)
   formPreviewFoto.value = null
-  if (inputFotoRef.value) inputFotoRef.value.value = ''
 }
 
 function selecionarFoto(e) {
   const file = e.target.files[0]
   if (!file) return
-  if (formPreviewFoto.value?.startsWith('blob:')) {
-    URL.revokeObjectURL(formPreviewFoto.value)
-  }
+  if (formPreviewFoto.value?.startsWith('blob:')) URL.revokeObjectURL(formPreviewFoto.value)
   formFileFoto.value = file
   formPreviewFoto.value = URL.createObjectURL(file)
+  e.target.value = ''
 }
 
 async function salvarEdicao() {
@@ -226,26 +204,19 @@ async function salvarEdicao() {
     if (formFileFoto.value) {
       const fd = new FormData()
       fd.append('arquivo', formFileFoto.value)
-      const res = await apiFetch('/upload/profissional_subservico', {
-        method: 'POST',
-        body: fd,
-      })
+      const res = await apiFetch('/upload/profissional_subservico', { method: 'POST', body: fd })
       imagem_url = res.imagem_url
     }
-
-    await apiFetch(
-      `/profissional-subservicos/${vinculoEditando.value.id_profissional}/${vinculoEditando.value.id_subservico}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({
-          preco: parseFloat(formPreco.value),
-          duracao_minutos: parseInt(formDuracao.value),
-          ativo: formAtivo.value,
-          ...(imagem_url !== undefined && { imagem_url }),
-        }),
-      }
-    )
-
+    await apiFetch(`/profissional-subservicos/${vinculoEditando.value.id_profissional}/${vinculoEditando.value.id_subservico}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        preco: parseFloat(formPreco.value),
+        duracao_minutos: parseInt(formDuracao.value),
+        ativo: formAtivo.value,
+        descricao: formDescricao.value,
+        ...(imagem_url !== undefined && { imagem_url }),
+      }),
+    })
     await carregarVinculos()
     cancelarEdicao()
   } catch (e) {
@@ -254,31 +225,18 @@ async function salvarEdicao() {
 }
 
 async function removerVinculo(v) {
-  const ok = confirm(
-    `Desvincular "${v.nome_subservico}"?\nA foto e as configurações serão removidas.`
-  )
+  const ok = confirm(`Desvincular "${v.nome_subservico}"?\nA foto e as configurações serão removidas.`)
   if (!ok) return
   try {
-    await apiFetch(
-      `/profissional-subservicos/${v.id_profissional}/${v.id_subservico}`,
-      { method: 'DELETE' }
-    )
+    await apiFetch(`/profissional-subservicos/${v.id_profissional}/${v.id_subservico}`, { method: 'DELETE' })
     await carregarVinculos()
   } catch (e) {
     alert('Erro ao remover: ' + e.message)
   }
 }
 
-// ==========================================================
-// SUB-MODAL "TROCAR"
-// ==========================================================
 async function abrirTroca(v) {
-  trocando.value = {
-    id_profissional: v.id_profissional,
-    id_subservico_atual: v.id_subservico,
-    nome_subservico_atual: v.nome_subservico,
-  }
-  // Reset do form
+  trocando.value = { id_profissional: v.id_profissional, id_subservico_atual: v.id_subservico, nome_subservico_atual: v.nome_subservico }
   trocaTermoBusca.value = ''
   trocaListaAberta.value = false
   trocaSubservicoSelecionado.value = null
@@ -286,24 +244,17 @@ async function abrirTroca(v) {
   trocaListaServAberta.value = false
   trocaMostrarForm.value = false
   trocaFileFoto.value = null
-  if (trocaPreviewFoto.value?.startsWith('blob:')) {
-    URL.revokeObjectURL(trocaPreviewFoto.value)
-  }
+  if (trocaPreviewFoto.value?.startsWith('blob:')) URL.revokeObjectURL(trocaPreviewFoto.value)
   trocaPreviewFoto.value = null
   trocaPreco.value = ''
   trocaDuracao.value = 30
-  if (trocaInputFotoRef.value) trocaInputFotoRef.value.value = ''
-
-  // Carrega subserviços e serviços frescos
+  trocaDescricao.value = ''
   try {
-    const [subs, servs] = await Promise.all([
-      apiFetch('/subservicos'),
-      apiFetch('/servicos'),
-    ])
+    const [subs, servs] = await Promise.all([apiFetch('/subservicos'), apiFetch('/servicos')])
     todosSubservicos.value = subs
     todosServicos.value = servs
   } catch (e) {
-    console.error('Erro ao carregar listas de troca:', e)
+    console.error(e)
   }
 }
 
@@ -315,12 +266,11 @@ function fecharTroca() {
   trocaServicoSelecionado.value = null
   trocaMostrarForm.value = false
   trocaFileFoto.value = null
-  if (trocaPreviewFoto.value?.startsWith('blob:')) {
-    URL.revokeObjectURL(trocaPreviewFoto.value)
-  }
+  if (trocaPreviewFoto.value?.startsWith('blob:')) URL.revokeObjectURL(trocaPreviewFoto.value)
   trocaPreviewFoto.value = null
   trocaPreco.value = ''
   trocaDuracao.value = 30
+  trocaDescricao.value = ''
 }
 
 function trocaSelecionarSubservico(sub) {
@@ -354,47 +304,34 @@ function trocaOnInputBusca() {
 function trocaSelecionarFoto(e) {
   const file = e.target.files[0]
   if (!file) return
-  if (trocaPreviewFoto.value?.startsWith('blob:')) {
-    URL.revokeObjectURL(trocaPreviewFoto.value)
-  }
+  if (trocaPreviewFoto.value?.startsWith('blob:')) URL.revokeObjectURL(trocaPreviewFoto.value)
   trocaFileFoto.value = file
   trocaPreviewFoto.value = URL.createObjectURL(file)
+  e.target.value = ''
 }
 
 async function salvarTroca() {
   if (!trocando.value) return
   try {
     let idSubNovo = trocaSubservicoSelecionado.value?.id
-
-    // Se está criando novo subserviço
     if (!idSubNovo) {
       if (!trocaServicoSelecionado.value) {
-        alert('Escolha um serviço para o novo subserviço.')
+        alert('Escolha um serviço.')
         return
       }
       const novo = await apiFetch('/subservicos', {
         method: 'POST',
-        body: JSON.stringify({
-          nome: trocaTermoBusca.value.trim(),
-          id_servico: trocaServicoSelecionado.value.id,
-        }),
+        body: JSON.stringify({ nome: trocaTermoBusca.value.trim(), id_servico: trocaServicoSelecionado.value.id }),
       })
       idSubNovo = novo.id
     }
-
-    // Upload de foto (se tiver)
     let urlFoto = null
     if (trocaFileFoto.value) {
       const fd = new FormData()
       fd.append('arquivo', trocaFileFoto.value)
-      const res = await apiFetch('/upload/profissional_subservico', {
-        method: 'POST',
-        body: fd,
-      })
+      const res = await apiFetch('/upload/profissional_subservico', { method: 'POST', body: fd })
       urlFoto = res.imagem_url
     }
-
-    // 1. POST novo vínculo
     await apiFetch('/profissional-subservicos', {
       method: 'POST',
       body: JSON.stringify({
@@ -403,27 +340,18 @@ async function salvarTroca() {
         duracao_minutos: parseInt(trocaDuracao.value),
         imagem_url: urlFoto,
         id_profissional: trocando.value.id_profissional,
+        descricao: trocaDescricao.value,
       }),
     })
-
-    // 2. SÓ AGORA deleta o antigo
-    await apiFetch(
-      `/profissional-subservicos/${trocando.value.id_profissional}/${trocando.value.id_subservico_atual}`,
-      { method: 'DELETE' }
-    )
-
+    await apiFetch(`/profissional-subservicos/${trocando.value.id_profissional}/${trocando.value.id_subservico_atual}`, { method: 'DELETE' })
     alert('Subserviço trocado com sucesso!')
     fecharTroca()
     await carregarVinculos()
   } catch (e) {
-    console.error('Erro ao trocar:', e)
     alert('Erro ao trocar: ' + e.message)
   }
 }
 
-// ==========================================================
-// RESET / FECHAR
-// ==========================================================
 function resetar() {
   cancelarEdicao()
   fecharTroca()
@@ -433,6 +361,7 @@ function resetar() {
   nomeProfSelecionada.value = ''
   todosSubservicos.value = []
   todosServicos.value = []
+  modalDescricaoAberto.value = false
 }
 
 function fechar() {
@@ -442,22 +371,19 @@ function fechar() {
 </script>
 
 <template>
-  <!-- ================= MODAL PRINCIPAL ================= -->
   <div v-if="editarSubservico" class="modal-overlay">
     <div class="modal-conteudo">
       <header class="modal-header">
         <div>
           <h2 class="modal-titulo">Editar Subserviços</h2>
           <p class="modal-subtitulo">
-            <template v-if="tipoUsuario === 'ADMIN'">
-              Visualizando: <strong>{{ nomeProfSelecionada || '—' }}</strong>
-            </template>
+            <template v-if="tipoUsuario === 'ADMIN'"
+              >Visualizando: <strong>{{ nomeProfSelecionada || '—' }}</strong></template
+            >
             <template v-else>Seus subserviços vinculados</template>
           </p>
         </div>
-        <button @click="fechar" class="btn-fechar">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <button @click="fechar" class="btn-fechar"><i class="fa-solid fa-xmark"></i></button>
       </header>
 
       <div class="modal-body">
@@ -465,79 +391,43 @@ function fechar() {
           <label class="campo">
             <span>Profissional</span>
             <select v-model.number="idProfSelecionado">
-              <option v-if="profissionais.length === 0" :value="null">
-                Nenhum perfil profissional cadastrado
-              </option>
-              <option
-                v-for="p in profissionais"
-                :key="p.id_profissional"
-                :value="p.id_profissional"
-              >
-                {{ p.nome }}
-                <template v-if="p.tipo === 'ADMIN'"> (Admin)</template>
-                ({{ p.email }})
-              </option>
+              <option v-if="profissionais.length === 0" :value="null">Nenhum perfil cadastrado</option>
+              <option v-for="p in profissionais" :key="p.id_profissional" :value="p.id_profissional">{{ p.nome }} <template v-if="p.tipo === 'ADMIN'"> (Admin)</template> ({{ p.email }})</option>
             </select>
           </label>
         </div>
 
         <p v-if="carregando" class="empty-text">Carregando...</p>
-
-        <p v-else-if="!idProfSelecionado" class="empty-text">
-          Selecione uma profissional para ver os subserviços.
-        </p>
-
-        <p v-else-if="vinculos.length === 0" class="empty-text">
-          Nenhum subserviço vinculado ainda.
-        </p>
+        <p v-else-if="!idProfSelecionado" class="empty-text">Selecione uma profissional para ver os subserviços.</p>
+        <p v-else-if="vinculos.length === 0" class="empty-text">Nenhum subserviço vinculado ainda.</p>
 
         <div v-else class="lista-vinculos">
-          <div
-            v-for="v in vinculos"
-            :key="`${v.id_profissional}-${v.id_subservico}`"
-            class="vinculo-card"
-            :class="{ 'vinculo-inativo': !v.ativo }"
-          >
-            <template
-              v-if="!vinculoEditando || vinculoEditando.id_subservico !== v.id_subservico"
-            >
+          <div v-for="v in vinculos" :key="`${v.id_profissional}-${v.id_subservico}`" class="vinculo-card" :class="{ 'vinculo-inativo': !v.ativo }">
+            <template v-if="!vinculoEditando || vinculoEditando.id_subservico !== v.id_subservico">
               <div class="v-foto">
                 <img v-if="v.imagem_url" :src="urlImagem(v.imagem_url)" alt="" />
-                <div v-else class="v-foto-vazia">
-                  <i class="fa-solid fa-image"></i>
-                </div>
+                <div v-else class="v-foto-vazia"><i class="fa-solid fa-image"></i></div>
               </div>
 
               <div class="v-info">
                 <h3 class="v-nome">{{ v.nome_subservico }}</h3>
                 <p class="v-meta">
-                  {{ v.nome_servico }}
-                  <span class="tag-categoria">({{ v.nome_categoria }})</span>
+                  {{ v.nome_servico }} <span class="tag-categoria">({{ v.nome_categoria }})</span>
                 </p>
                 <p class="v-meta-2">
                   R$ {{ formatarPreco(v.preco) }} · {{ v.duracao_minutos }} min
                   <span v-if="!v.ativo" class="badge-inativo">Desativado</span>
                 </p>
+
+                <p v-if="v.descricao" class="v-meta v-descricao">
+                  {{ v.descricao }}
+                </p>
               </div>
 
               <div class="v-acoes">
-                <button class="btn-acao btn-editar" title="Editar" @click="abrirEdicao(v)">
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-                <button
-                  class="btn-acao btn-trocar"
-                  title="Trocar subserviço"
-                  @click="abrirTroca(v)"
-                >
-                  <i class="fa-solid fa-arrows-rotate"></i>
-                </button>
-                <button
-                  class="btn-acao btn-remover"
-                  title="Desvincular"
-                  @click="removerVinculo(v)"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
+                <button class="btn-acao btn-editar" title="Editar" @click="abrirEdicao(v)"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-acao btn-trocar" title="Trocar subserviço" @click="abrirTroca(v)"><i class="fa-solid fa-arrows-rotate"></i></button>
+                <button class="btn-acao btn-remover" title="Desvincular" @click="removerVinculo(v)"><i class="fa-solid fa-trash"></i></button>
               </div>
             </template>
 
@@ -546,8 +436,7 @@ function fechar() {
                 <div class="v-edit-header">
                   <h3>{{ v.nome_subservico }}</h3>
                   <p class="v-meta">
-                    {{ v.nome_servico }}
-                    <span class="tag-categoria">({{ v.nome_categoria }})</span>
+                    {{ v.nome_servico }} <span class="tag-categoria">({{ v.nome_categoria }})</span>
                   </p>
                 </div>
 
@@ -566,32 +455,25 @@ function fechar() {
                   </label>
                 </div>
 
+                <label class="campo" style="margin-top: 1rem">
+                  <span>
+                    Descrição (Opcional)
+                    <small style="opacity: 0.6; font-size: 1.1rem; margin-left: 0.5rem">{{ formDescricao.length }}/{{ limiteDescricao }}</small>
+                  </span>
+                  <input type="text" :value="formDescricao" placeholder="Clique para detalhar o subserviço..." class="input-clicavel" readonly @click="abrirModalDescricao('inline', formDescricao)" />
+                </label>
+
                 <div class="v-edit-foto">
-                  <input
-                    ref="inputFotoRef"
-                    type="file"
-                    accept="image/*"
-                    class="input-escondido"
-                    @change="selecionarFoto"
-                  />
-                  <button
-                    type="button"
-                    class="btn-escolher-foto"
-                    @click="inputFotoRef.click()"
-                  >
-                    <i class="fa-solid fa-camera"></i>
-                    {{ formPreviewFoto ? 'Trocar foto' : 'Escolher foto' }}
-                  </button>
+                  <label class="btn-escolher-foto">
+                    <i class="fa-solid fa-camera"></i> {{ formPreviewFoto ? 'Trocar foto' : 'Escolher foto' }}
+                    <input type="file" accept="image/*" class="input-escondido" @change="selecionarFoto" />
+                  </label>
                   <img v-if="formPreviewFoto" :src="formPreviewFoto" class="preview-edit" />
                 </div>
 
                 <div class="v-edit-acoes">
-                  <button type="button" class="btn-cancelar" @click="cancelarEdicao">
-                    Cancelar
-                  </button>
-                  <button type="button" class="btn-salvar" @click="salvarEdicao">
-                    Salvar
-                  </button>
+                  <button type="button" class="btn-cancelar" @click="cancelarEdicao">Cancelar</button>
+                  <button type="button" class="btn-salvar" @click="salvarEdicao">Salvar</button>
                 </div>
               </div>
             </template>
@@ -601,7 +483,6 @@ function fechar() {
     </div>
   </div>
 
-  <!-- ================= SUB-MODAL: TROCAR ================= -->
   <div v-if="trocando" class="modal-overlay nested" @click.self="fecharTroca">
     <div class="modal-conteudo modal-troca">
       <header class="modal-header">
@@ -611,144 +492,94 @@ function fechar() {
             Substituindo: <strong>{{ trocando.nome_subservico_atual }}</strong>
           </p>
         </div>
-        <button @click="fecharTroca" class="btn-fechar">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <button @click="fecharTroca" class="btn-fechar"><i class="fa-solid fa-xmark"></i></button>
       </header>
 
       <div class="modal-body">
-        <!-- ETAPA 1: Busca -->
         <label class="campo">
           <span>1. Digite o nome do novo subserviço</span>
           <div class="relative-container">
-            <input
-              type="text"
-              v-model="trocaTermoBusca"
-              placeholder="Ex: corte de cabelo, unha em gel..."
-              @focus="trocaListaAberta = true"
-              @click="trocaListaAberta = true"
-              @input="trocaOnInputBusca"
-              @blur="trocaListaAberta = false"
-              required
-            />
-            <ul
-              v-if="trocaListaAberta && trocaTermoBusca.trim() && !trocaSubservicoSelecionado"
-              class="dropdown-lista"
-            >
-              <li class="dropdown-criar" @mousedown.prevent="trocaCriarNovo">
-                + Criar novo subserviço: "{{ trocaTermoBusca }}"
-              </li>
-              <li
-                v-for="sub in trocaSubservicosFiltrados"
-                :key="sub.id"
-                @mousedown.prevent="trocaSelecionarSubservico(sub)"
-              >
-                {{ sub.nome }}
-              </li>
+            <input type="text" v-model="trocaTermoBusca" placeholder="Ex: corte de cabelo, unha em gel..." @focus="trocaListaAberta = true" @click="trocaListaAberta = true" @input="trocaOnInputBusca" @blur="trocaListaAberta = false" required />
+            <ul v-if="trocaListaAberta && trocaTermoBusca.trim() && !trocaSubservicoSelecionado" class="dropdown-lista">
+              <li class="dropdown-criar" @mousedown.prevent="trocaCriarNovo">+ Criar novo subserviço: "{{ trocaTermoBusca }}"</li>
+              <li v-for="sub in trocaSubservicosFiltrados" :key="sub.id" @mousedown.prevent="trocaSelecionarSubservico(sub)">{{ sub.nome }}</li>
             </ul>
           </div>
         </label>
 
-        <!-- Badge: selecionou existente -->
         <div v-if="trocaSubservicoSelecionado" class="badge-vinculo">
           <i class="fa-solid fa-link"></i>
           Vinculado a <strong>{{ trocaSubservicoSelecionado.nome_servico }}</strong>
-          <span v-if="trocaSubservicoSelecionado.nome_categoria" class="sub-badge">
-            ({{ trocaSubservicoSelecionado.nome_categoria }})
-          </span>
+          <span v-if="trocaSubservicoSelecionado.nome_categoria" class="sub-badge">({{ trocaSubservicoSelecionado.nome_categoria }})</span>
         </div>
 
-        <!-- ETAPA 2: escolher serviço (se for criar novo) -->
-        <label
-          v-if="!trocaSubservicoSelecionado && trocaTermoBusca.trim()"
-          class="campo"
-        >
+        <label v-if="!trocaSubservicoSelecionado && trocaTermoBusca.trim()" class="campo">
           <span>2. Vincular a qual serviço?</span>
           <div class="relative-container">
-            <input
-              type="text"
-              :value="trocaServicoSelecionado ? `${trocaServicoSelecionado.nome} (${trocaServicoSelecionado.nome_categoria})` : ''"
-              placeholder="Clique para escolher..."
-              readonly
-              @click="trocaListaServAberta = !trocaListaServAberta"
-              @blur="trocaListaServAberta = false"
-            />
+            <input type="text" :value="trocaServicoSelecionado ? `${trocaServicoSelecionado.nome} (${trocaServicoSelecionado.nome_categoria})` : ''" placeholder="Clique para escolher..." readonly @click="trocaListaServAberta = !trocaListaServAberta" @blur="trocaListaServAberta = false" />
             <ul v-if="trocaListaServAberta" class="dropdown-lista">
-              <li
-                v-for="serv in todosServicos"
-                :key="serv.id"
-                @mousedown.prevent="trocaSelecionarServico(serv)"
-              >
-                {{ serv.nome }}
-                <span class="tag-categoria">- {{ serv.nome_categoria }}</span>
+              <li v-for="serv in todosServicos" :key="serv.id" @mousedown.prevent="trocaSelecionarServico(serv)">
+                {{ serv.nome }} <span class="tag-categoria">- {{ serv.nome_categoria }}</span>
               </li>
             </ul>
           </div>
         </label>
 
-        <!-- ETAPA 3: Foto + preço -->
         <div v-if="trocaMostrarForm" class="etapa-troca">
           <div class="troca-foto-col">
-            <input
-              ref="trocaInputFotoRef"
-              type="file"
-              accept="image/*"
-              class="input-escondido"
-              @change="trocaSelecionarFoto"
-            />
-            <button
-              type="button"
-              class="btn-escolher-foto"
-              @click="trocaInputFotoRef.click()"
-            >
-              <i class="fa-solid fa-camera"></i>
-              {{ trocaPreviewFoto ? 'Trocar foto' : 'Escolher Foto' }}
-            </button>
-            <div v-if="!trocaPreviewFoto" class="preview-troca preview-vazio">
-              Sem foto
-            </div>
+            <label class="btn-escolher-foto">
+              <i class="fa-solid fa-camera"></i> {{ trocaPreviewFoto ? 'Trocar foto' : 'Escolher Foto' }}
+              <input type="file" accept="image/*" class="input-escondido" @change="trocaSelecionarFoto" />
+            </label>
+            <div v-if="!trocaPreviewFoto" class="preview-troca preview-vazio">Sem foto</div>
             <img v-else :src="trocaPreviewFoto" class="preview-troca" />
           </div>
 
           <div class="troca-campos-col">
             <label class="campo">
               <span>Preço (R$)</span>
-              <input
-                type="number"
-                step="0.01"
-                min="0.01"
-                v-model="trocaPreco"
-                placeholder="0,00"
-                required
-              />
+              <input type="number" step="0.01" min="0.01" v-model="trocaPreco" placeholder="0,00" required />
             </label>
             <label class="campo">
               <span>Duração (min)</span>
               <input type="number" min="1" v-model="trocaDuracao" required />
             </label>
+
+            <label class="campo">
+              <span>
+                Descrição (Opcional)
+                <small style="opacity: 0.6; font-size: 1.1rem; margin-left: 0.5rem">{{ trocaDescricao.length }}/{{ limiteDescricao }}</small>
+              </span>
+              <input type="text" :value="trocaDescricao" placeholder="Clique para detalhar o subserviço..." class="input-clicavel" readonly @click="abrirModalDescricao('troca', trocaDescricao)" />
+            </label>
           </div>
         </div>
 
         <div class="modal-acoes">
-          <button type="button" @click="fecharTroca" class="btn-cancelar">
-            Cancelar
-          </button>
-          <button
-            type="button"
-            @click="salvarTroca"
-            class="btn-salvar"
-            :disabled="!trocaMostrarForm"
-          >
-            Trocar
-          </button>
+          <button type="button" @click="fecharTroca" class="btn-cancelar">Cancelar</button>
+          <button type="button" @click="salvarTroca" class="btn-salvar" :disabled="!trocaMostrarForm">Trocar</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="modalDescricaoAberto" class="modal-overlay-nested" @click.self="cancelarDescricao">
+    <div class="modal-descricao-conteudo">
+      <h3 class="modal-descricao-titulo">Detalhes do Subserviço</h3>
+      <p class="modal-descricao-subtitulo">Escreva detalhes, diferenciais ou observações sobre este serviço.</p>
+      <div class="textarea-wrapper">
+        <textarea v-model="descricaoRascunho" :maxlength="limiteDescricao" placeholder="Ex: Inclui lavagem, hidratação e finalização..." class="textarea-descricao" rows="6" autofocus></textarea>
+        <span class="contador-bio">{{ descricaoRascunho.length }} / {{ limiteDescricao }}</span>
+      </div>
+      <div class="modal-acoes-bio">
+        <button type="button" @click="cancelarDescricao" class="btn-cancelar">Cancelar</button>
+        <button type="button" @click="salvarDescricao" class="btn-salvar">Confirmar</button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* ================= ESTRUTURA ================= */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -763,6 +594,17 @@ function fechar() {
 .modal-overlay.nested {
   z-index: 1100;
   background: rgba(30, 18, 10, 0.92);
+}
+
+.modal-overlay-nested {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 18, 10, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  backdrop-filter: blur(6px);
 }
 
 .modal-conteudo {
@@ -801,6 +643,7 @@ function fechar() {
   font-family: var(--font-body);
   font-size: 1.3rem;
 }
+
 .modal-subtitulo strong {
   color: var(--kp-gold);
 }
@@ -811,10 +654,6 @@ function fechar() {
   color: var(--kp-gold);
   font-size: 2.2rem;
   cursor: pointer;
-  transition: opacity 0.2s;
-}
-.btn-fechar:hover {
-  opacity: 0.7;
 }
 
 .modal-body {
@@ -825,20 +664,22 @@ function fechar() {
   gap: 1.6rem;
 }
 
-/* ================= CAMPOS ================= */
 .campo {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
 }
+
 .campo > span {
   color: var(--kp-creme);
   font-family: var(--font-body);
   font-size: 1.2rem;
   letter-spacing: 0.05em;
 }
+
 .campo input[type='number'],
-.campo input[type='text'] {
+.campo input[type='text'],
+.textarea-descricao {
   width: 100%;
   padding: 1rem 1.2rem;
   border: 1px solid var(--kp-gold-border);
@@ -849,8 +690,12 @@ function fechar() {
   font-size: 1.4rem;
   outline: none;
 }
-.campo input:focus {
-  border-color: var(--kp-gold);
+
+.input-clicavel {
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .checkbox-campo {
@@ -858,17 +703,18 @@ function fechar() {
   align-items: center;
   gap: 0.8rem;
 }
+
 .checkbox-campo input {
   width: 1.8rem;
   height: 1.8rem;
   cursor: pointer;
 }
 
-/* ================= SELETOR PROFISSIONAL ================= */
 .seletor-prof {
   padding-bottom: 1.5rem;
   border-bottom: 1px solid rgba(201, 166, 107, 0.2);
 }
+
 .seletor-prof select {
   width: 100%;
   padding: 1.2rem 1.4rem;
@@ -878,10 +724,8 @@ function fechar() {
   color: var(--kp-text);
   font-family: var(--font-body);
   font-size: 1.4rem;
-  cursor: pointer;
 }
 
-/* ================= LISTA DE VÍNCULOS ================= */
 .lista-vinculos {
   display: flex;
   flex-direction: column;
@@ -896,11 +740,8 @@ function fechar() {
   background: rgba(245, 235, 221, 0.05);
   border: 1px solid var(--kp-gold-border);
   border-radius: 1rem;
-  transition: background 0.2s;
 }
-.vinculo-card:hover {
-  background: rgba(245, 235, 221, 0.08);
-}
+
 .vinculo-inativo {
   opacity: 0.55;
   border-style: dashed;
@@ -909,6 +750,7 @@ function fechar() {
 .v-foto {
   flex-shrink: 0;
 }
+
 .v-foto img,
 .v-foto-vazia {
   width: 8rem;
@@ -920,6 +762,7 @@ function fechar() {
   align-items: center;
   justify-content: center;
 }
+
 .v-foto-vazia {
   background: var(--kp-vinho-low);
   color: var(--kp-creme-low);
@@ -929,22 +772,36 @@ function fechar() {
 .v-info {
   flex: 1;
 }
+
 .v-nome {
   color: var(--kp-creme);
   font-family: var(--font-display);
   font-size: 1.8rem;
   margin-bottom: 0.4rem;
 }
+
 .v-meta {
   color: var(--kp-creme-low);
   font-family: var(--font-body);
   font-size: 1.2rem;
 }
+
 .v-meta-2 {
   color: var(--kp-gold);
   font-family: var(--font-body);
   font-size: 1.3rem;
   margin-top: 0.4rem;
+}
+
+.v-descricao {
+  margin-top: 0.6rem;
+  white-space: pre-line;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .vinculo-card .tag-categoria {
@@ -968,12 +825,12 @@ function fechar() {
   letter-spacing: 0.05em;
 }
 
-/* ================= BOTÕES DE AÇÃO ================= */
 .v-acoes {
   display: flex;
   gap: 0.6rem;
   flex-shrink: 0;
 }
+
 .btn-acao {
   width: 3.8rem;
   height: 3.8rem;
@@ -987,40 +844,47 @@ function fechar() {
   font-size: 1.3rem;
   transition: all 0.2s;
 }
+
 .btn-editar {
   color: var(--kp-gold);
 }
+
 .btn-editar:hover {
   background: var(--kp-gold);
   color: var(--kp-mahogany);
 }
+
 .btn-trocar {
   color: #8fb4d8;
 }
+
 .btn-trocar:hover {
   background: #8fb4d8;
   color: var(--kp-mahogany);
 }
+
 .btn-remover {
   color: #ff6b6b;
   border-color: rgba(255, 107, 107, 0.3);
 }
+
 .btn-remover:hover {
   background: #ff6b6b;
   color: #fff;
 }
 
-/* ================= EDIÇÃO INLINE ================= */
 .v-edit-form {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
 }
+
 .v-edit-header {
   border-bottom: 1px solid rgba(201, 166, 107, 0.15);
   padding-bottom: 0.8rem;
 }
+
 .v-edit-header h3 {
   color: var(--kp-gold);
   font-family: var(--font-display);
@@ -1039,6 +903,7 @@ function fechar() {
   display: flex;
   align-items: center;
   gap: 1.2rem;
+  margin-top: 1rem;
 }
 
 .btn-escolher-foto {
@@ -1052,8 +917,11 @@ function fechar() {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.6rem;
+  transition: background 0.2s;
 }
+
 .btn-escolher-foto:hover {
   background: #7a2632;
 }
@@ -1087,22 +955,23 @@ function fechar() {
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .btn-cancelar {
   background: transparent;
   color: var(--kp-creme);
   border: 1px solid var(--kp-gold-border);
 }
+
 .btn-cancelar:hover {
   background: rgba(245, 235, 221, 0.1);
 }
+
 .btn-salvar {
   background: var(--kp-gold);
   color: var(--kp-vinho);
   border: 1px solid var(--kp-gold);
 }
-.btn-salvar:hover:not(:disabled) {
-  background: var(--kp-creme);
-}
+
 .btn-salvar:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -1117,7 +986,6 @@ function fechar() {
   font-style: italic;
 }
 
-/* ================= SUB-MODAL TROCAR ================= */
 .relative-container {
   position: relative;
   width: 100%;
@@ -1139,27 +1007,19 @@ function fechar() {
   max-height: 20rem;
   overflow-y: auto;
 }
+
 .dropdown-lista li {
   padding: 1rem 1.4rem;
   font-family: var(--font-body);
   font-size: 1.3rem;
   color: var(--kp-text);
   cursor: pointer;
-  transition: background 0.2s;
 }
-.dropdown-lista li:hover {
-  background: var(--kp-creme);
-}
+
 .dropdown-lista li.dropdown-criar {
   color: #7a5c1e;
   font-weight: bold;
   border-bottom: 1px solid rgba(201, 166, 107, 0.2);
-}
-.dropdown-lista .tag-categoria {
-  color: #7a5c1e;
-  font-size: 1.1rem;
-  margin-left: 0.4rem;
-  opacity: 1;
 }
 
 .badge-vinculo {
@@ -1175,22 +1035,13 @@ function fechar() {
   gap: 0.6rem;
   flex-wrap: wrap;
 }
-.badge-vinculo i {
-  color: var(--kp-gold);
-}
-.badge-vinculo strong {
-  color: var(--kp-gold);
-}
-.sub-badge {
-  color: var(--kp-creme-low);
-  font-size: 1.1rem;
-}
 
 .etapa-troca {
   display: flex;
   gap: 2rem;
   align-items: flex-start;
 }
+
 .troca-foto-col {
   width: 14rem;
   flex-shrink: 0;
@@ -1198,12 +1049,14 @@ function fechar() {
   flex-direction: column;
   gap: 0.8rem;
 }
+
 .troca-campos-col {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
+
 .preview-troca {
   width: 14rem;
   height: 14rem;
@@ -1212,13 +1065,13 @@ function fechar() {
   border: 1px solid var(--kp-gold);
   align-self: center;
 }
+
 .preview-vazio {
   background: var(--kp-vinho-low);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--kp-creme-low);
-  font-size: 1.2rem;
 }
 
 .modal-acoes {
@@ -1230,7 +1083,64 @@ function fechar() {
   margin-top: 0.8rem;
 }
 
-/* ================= RESPONSIVO ================= */
+.modal-descricao-conteudo {
+  background: var(--kp-creme, #f5ebdd);
+  padding: 3rem;
+  border: 1px solid var(--kp-gold);
+  border-radius: 1.4rem;
+  width: min(65rem, 90%);
+}
+
+.modal-descricao-titulo {
+  color: var(--kp-vinho, #6b1d2c);
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.modal-descricao-subtitulo {
+  color: var(--kp-text, #4a2c2a);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.textarea-wrapper {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.textarea-descricao {
+  resize: vertical;
+  min-height: 14rem;
+}
+
+.contador-bio {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  color: #3d2010;
+  opacity: 0.6;
+}
+
+.modal-acoes-bio {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+.modal-acoes-bio .btn-salvar {
+  background: var(--kp-vinho);
+  color: var(--kp-creme);
+  border-color: var(--kp-vinho);
+}
+
+.modal-acoes-bio .btn-cancelar {
+  background: transparent;
+  color: var(--kp-vinho);
+  border-color: var(--kp-vinho);
+}
+
 @media (max-width: 768px) {
   .modal-conteudo {
     width: 95%;

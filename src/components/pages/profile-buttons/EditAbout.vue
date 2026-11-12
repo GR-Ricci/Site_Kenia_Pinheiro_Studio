@@ -37,12 +37,46 @@ async function carregar() {
 onMounted(() => {
   if (props.editarContato) carregar()
 })
+
 watch(
-  () => props.editarContato,
-  (aberto) => {
-    if (aberto) carregar()
-  },
+    () => props.editarContato,
+    (aberto) => {
+      if (aberto) carregar()
+    },
 )
+
+// --- MÁSCARA DE TELEFONE ---
+function aplicarMascaraTelefone(event, campo) {
+  let v = event.target.value.replace(/\D/g, '') // Remove tudo que não é número
+  if (v.length > 11) v = v.slice(0, 11) // Limita a 11 dígitos
+
+  if (v.length > 10) {
+    // Celular: (XX) XXXXX-XXXX
+    v = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3')
+  } else if (v.length > 6) {
+    // Fixo: (XX) XXXX-XXXX
+    v = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3')
+  } else if (v.length > 2) {
+    // Digitando o DDD: (XX) XXXX
+    v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2')
+  } else if (v.length > 0) {
+    // Abrindo o parêntese: (XX
+    v = v.replace(/^(\d*)/, '($1')
+  }
+
+  form.value[campo] = v
+  event.target.value = v
+}
+
+// --- MÁSCARA DE INSTAGRAM ---
+function formatarInstagram() {
+  let v = form.value.rede_social.trim()
+  if (v && !v.startsWith('@')) {
+    // Se não começar com @, adiciona e remove @ extras
+    v = '@' + v.replace(/@/g, '')
+  }
+  form.value.rede_social = v
+}
 
 async function salvar() {
   salvando.value = true
@@ -82,14 +116,27 @@ function fechar() {
         <p v-if="carregando" class="empty-text">Carregando...</p>
 
         <form v-else @submit.prevent="salvar" class="form-contato">
+
           <label class="campo">
             <span>Telefone</span>
-            <input type="tel" v-model="form.telefone" placeholder="(16) 99999-9999" />
+            <input
+                type="tel"
+                :value="form.telefone"
+                @input="aplicarMascaraTelefone($event, 'telefone')"
+                placeholder="(16) 99999-9999"
+                maxlength="15"
+            />
           </label>
 
           <label class="campo">
             <span>WhatsApp</span>
-            <input type="tel" v-model="form.whatsapp" placeholder="(16) 99999-9999" />
+            <input
+                type="tel"
+                :value="form.whatsapp"
+                @input="aplicarMascaraTelefone($event, 'whatsapp')"
+                placeholder="(16) 99999-9999"
+                maxlength="15"
+            />
           </label>
 
           <label class="campo">
@@ -99,15 +146,20 @@ function fechar() {
 
           <label class="campo">
             <span>Rede Social (Instagram)</span>
-            <input type="text" v-model="form.rede_social" placeholder="@keniapinheirostudio" />
+            <input
+                type="text"
+                v-model="form.rede_social"
+                @blur="formatarInstagram"
+                placeholder="@keniapinheirostudio"
+            />
           </label>
 
           <label class="campo">
             <span>Endereço</span>
             <input
-              type="text"
-              v-model="form.endereco"
-              placeholder="Rua ..., 123 — Bairro, Cidade UF"
+                type="text"
+                v-model="form.endereco"
+                placeholder="Rua ..., 123 — Bairro, Cidade UF"
             />
           </label>
 

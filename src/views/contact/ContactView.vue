@@ -34,6 +34,13 @@ function instagramUrl(rede) {
   const semArroba = rede.replace('@', '')
   return `https://instagram.com/${semArroba}`
 }
+
+// FUNÇÃO ADICIONADA AQUI
+function googleMapsUrl(endereco) {
+  if (!endereco) return '#'
+  const enderecoFormatado = encodeURIComponent(endereco)
+  return `https://www.google.com/maps/search/?api=1&query=${enderecoFormatado}`
+}
 </script>
 
 <template>
@@ -82,7 +89,8 @@ function instagramUrl(rede) {
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
 
-        <a v-if="contato.endereco" href="https://maps.google.com" target="_blank" rel="noreferrer" class="contact__item">
+        <!-- LINK DO MAPS CORRIGIDO AQUI -->
+        <a v-if="contato.endereco" :href="googleMapsUrl(contato.endereco)" target="_blank" rel="noreferrer" class="contact__item">
           <div class="contact__item-icon"><i class="fa-solid fa-location-dot"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">Endereço</p>

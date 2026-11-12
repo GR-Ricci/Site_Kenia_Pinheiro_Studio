@@ -5,15 +5,14 @@ import ButtonAdmin from '@/components/pages/profile/ButtonAdmin.vue'
 import { ref, onMounted } from 'vue'
 import { apiFetch } from '@/client.js'
 
-//Flags Modularização
 const modalEdicao = ref(false)
 
-//Preencher perfil
 const perfil = ref({
   nome: '',
   bio: '',
   imagem_url: '',
 })
+
 async function carregarPerfil() {
   try {
     const dados = await apiFetch('/profile')
@@ -22,21 +21,30 @@ async function carregarPerfil() {
     console.error('Erro ao buscar perfil:', erro.message)
   }
 }
+
 onMounted(() => {
   carregarPerfil()
 })
 
-//Preencher Modal
 const perfilEditado = ref({
   nome: '',
   bio: '',
   imagem_url: '',
 })
+
 function abrirEdicao() {
-  perfilEditado.value.nome = perfil.value.nome
-  perfilEditado.value.bio = perfil.value.bio
-  perfilEditado.value.imagem_url = perfil.value.imagem_url
+  perfilEditado.value = {
+    nome: perfil.value.nome || '',
+    bio: perfil.value.bio || '',
+    imagem_url: perfil.value.imagem_url || null,
+  }
   modalEdicao.value = true
+}
+
+// Função para tratar o salvamento e fechar o modal
+function onPerfilSalvo(dadosAtualizados) {
+  perfil.value = dadosAtualizados
+  modalEdicao.value = false
 }
 </script>
 
@@ -44,7 +52,7 @@ function abrirEdicao() {
   <main class="profile">
     <section class="profile__card">
       <div class="profile__photo-box">
-        <img class="profile__photo" :src="`http://localhost:8000/upload/perfil/${perfil.imagem_url}?t=${Date.now()}`" alt="Foto da profissional" />
+        <img v-if="perfil.imagem_url" class="profile__photo" :src="`http://localhost:8000/upload/perfil/${perfil.imagem_url}?t=${Date.now()}`" alt="Foto da profissional" />
       </div>
 
       <div class="profile__info">
@@ -54,7 +62,8 @@ function abrirEdicao() {
       </div>
 
       <button @click="abrirEdicao" class="btn-editar">Editar</button>
-      <UpdateModal :modal-edicao="modalEdicao" :perfil-editado="perfilEditado" @saved="perfil = $event" @close="modalEdicao = false" />
+
+      <UpdateModal :modal-edicao="modalEdicao" :perfil-editado="perfilEditado" @saved="onPerfilSalvo" @close="modalEdicao = false" />
     </section>
 
     <ButtonProfissional />
@@ -114,6 +123,10 @@ function abrirEdicao() {
   margin-top: 1rem;
   color: var(--kp-creme-low);
   font-size: 1.5rem;
+  line-height: 1.5;
+  white-space: pre-line;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .profile__person {
@@ -123,8 +136,7 @@ function abrirEdicao() {
 }
 
 .profile__card {
-  position: relative; /* Adicione isso para o botão se posicionar em relação ao card */
-  /* ... seus outros estilos (display: flex, background, etc) ... */
+  position: relative;
 }
 
 .btn-editar {

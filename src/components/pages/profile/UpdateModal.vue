@@ -8,53 +8,89 @@ const props = defineProps({
 })
 const emit = defineEmits(['close', 'saved'])
 
-// -> Estado da foto
-const versaoFoto = ref(Date.now())
-const fotoNoPreview = ref(false) // true quando o usuário escolhe uma nova foto ainda não salva
-const inputArquivo = ref(null)
-
-// Mostra a imagem salva (perfil/) por padrão;
-// se já escolheu nova foto, mostra o preview (perfilpreview/).
-const urlFoto = computed(() => {
-  if (!props.perfilEditado?.imagem_url) return null
-  const pasta = fotoNoPreview.value ? 'perfilpreview' : 'perfil'
-  return `${import.meta.env.VITE_API_URL}/upload/${pasta}/${props.perfilEditado.imagem_url}?v=${versaoFoto.value}`
+// Estado local (garante que os dados não se percam)
+const form = ref({
+  nome: '',
+  bio: '',
+  imagem_url: null,
 })
 
-// Reseta flags ao abrir o modal
+const versaoFoto = ref(Date.now())
+const fotoNoPreview = ref(false)
+const modalBioAberto = ref(false)
+const bioRascunho = ref('')
+const limiteBio = 300
+
+const urlFoto = computed(() => {
+  if (!form.value?.imagem_url) return null
+  const pasta = fotoNoPreview.value ? 'perfilpreview' : 'perfil'
+  return `${import.meta.env.VITE_API_URL}/upload/${pasta}/${form.value.imagem_url}?v=${versaoFoto.value}`
+})
+
+// Sempre que abrir o modal, preenche os dados do rascunho
 watch(
   () => props.modalEdicao,
   (aberto) => {
     if (aberto) {
+      form.value = {
+        nome: props.perfilEditado?.nome || '',
+        bio: props.perfilEditado?.bio || '',
+        imagem_url: props.perfilEditado?.imagem_url || null,
+      }
       fotoNoPreview.value = false
       versaoFoto.value = Date.now()
+      modalBioAberto.value = false
     }
   },
+  { immediate: true },
 )
 
 async function enviarFoto(evento) {
   const file = evento.target.files[0]
   if (!file) return
 
-  const form = new FormData()
-  form.append('arquivo', file)
+  const formData = new FormData()
+  formData.append('arquivo', file)
 
   try {
-    const dados = await apiFetch('/upload/perfil', { method: 'POST', body: form })
-    props.perfilEditado.imagem_url = dados.imagem_url
+    const dados = await apiFetch('/upload/perfil', { method: 'POST', body: formData })
+    form.value.imagem_url = dados.imagem_url
     fotoNoPreview.value = true
     versaoFoto.value = Date.now()
   } catch (erro) {
     console.error('Erro no upload:', erro.message)
+  } finally {
+    evento.target.value = ''
   }
 }
 
-// -> Perfil
+function abrirModalBio() {
+  bioRascunho.value = form.value.bio || ''
+  modalBioAberto.value = true
+}
+
+function salvarBio() {
+  form.value.bio = bioRascunho.value.trim()
+  modalBioAberto.value = false
+}
+
+function cancelarBio() {
+  modalBioAberto.value = false
+}
+
 async function salvarPerfil() {
   try {
+    const payload = {
+      nome: form.value.nome,
+      bio: form.value.bio,
+      imagem_url: form.value.imagem_url,
+    }
+
+    console.log('DADOS ENVIADOS:', payload)
+
     const dados = await apiFetch('/profile', {
       method: 'PATCH',
-      body: JSON.stringify(props.perfilEditado),
+      body: JSON.stringify(payload),
     })
     emit('saved', dados)
     emit('close')
@@ -65,10 +101,9 @@ async function salvarPerfil() {
 }
 
 async function cancelarEdicao() {
-  // Só apaga do perfilpreview se o usuário tiver subido uma foto nova
-  if (fotoNoPreview.value && props.perfilEditado.imagem_url) {
+  if (fotoNoPreview.value && form.value.imagem_url) {
     try {
-      await apiFetch(`/upload/perfil/${props.perfilEditado.imagem_url}`, { method: 'DELETE' })
+      await apiFetch(`/upload/perfil/${form.value.imagem_url}`, { method: 'DELETE' })
     } catch (erro) {
       console.error('Erro ao deletar preview', erro.message)
     }
@@ -85,21 +120,24 @@ async function cancelarEdicao() {
       <form @submit.prevent="salvarPerfil" class="modal-form">
         <label class="modal-campo">
           <span>Nome</span>
-          <input type="text" v-model="perfilEditado.nome" placeholder="Seu nome" />
+          <input type="text" v-model="form.nome" placeholder="Seu nome" />
         </label>
 
-        <label class="modal-campo">
-          <span>Bio</span>
-          <input type="text" v-model="perfilEditado.bio" placeholder="Sua bio" />
-        </label>
+        <div class="modal-campo">
+          <div class="campo-header">
+            <span>Bio</span>
+            <span class="contador-texto">{{ form.bio?.length || 0 }}/{{ limiteBio }}</span>
+          </div>
+          <input type="text" :value="form.bio" placeholder="Clique aqui para escrever uma biografia..." class="input-clicavel" readonly @click="abrirModalBio" />
+        </div>
 
-        <label class="modal-campo">
+        <div class="modal-campo">
           <span><i class="fa-solid fa-camera"></i></span>
-
-          <input ref="inputArquivo" type="file" accept="image/jpeg,image/png,image/webp" class="input-escondido" @change="enviarFoto" />
-
-          <button type="button" class="btn-escolher-foto" @click="inputArquivo.click()">Escolher foto</button>
-        </label>
+          <label class="btn-escolher-foto">
+            Escolher foto
+            <input type="file" accept="image/jpeg,image/png,image/webp" class="input-escondido" @change="enviarFoto" />
+          </label>
+        </div>
 
         <div class="modal-acoes">
           <button type="button" @click="cancelarEdicao" class="btn-cancelar">Cancelar</button>
@@ -110,35 +148,44 @@ async function cancelarEdicao() {
       </form>
     </div>
   </div>
+
+  <div v-if="modalBioAberto" class="modal-overlay-bio" @click.self="cancelarBio">
+    <div class="modal-bio-conteudo">
+      <h3 class="modal-bio-titulo">Sua Biografia</h3>
+      <p class="modal-bio-subtitulo">Escreva um pouco sobre você, sua experiência e especialidades.</p>
+
+      <div class="textarea-wrapper">
+        <textarea v-model="bioRascunho" :maxlength="limiteBio" placeholder="Escreva aqui..." class="textarea-bio" rows="8" autofocus></textarea>
+        <span class="contador-bio">{{ bioRascunho.length }} / {{ limiteBio }}</span>
+      </div>
+
+      <div class="modal-acoes-bio">
+        <button type="button" @click="cancelarBio" class="btn-cancelar">Cancelar</button>
+        <button type="button" @click="salvarBio" class="btn-salvar">Confirmar</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-/* Modal editar perfil */
-
-/* botao editar para ativar modal */
-
-/* modal */
-
-/* Fundo escuro do modal */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(30, 18, 10, 0.85); /* Um pouco mais escuro para dar foco */
+  background: rgba(30, 18, 10, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
-  backdrop-filter: blur(4px); /* Desfoca o fundo (dá um efeito muito bonito) */
+  backdrop-filter: blur(4px);
 }
 
-/* Caixa do modal */
 .modal-conteudo {
   background: var(--kp-mahogany);
   padding: 3.5rem;
   border: 1px solid var(--kp-gold-border);
   border-radius: 1.4rem;
   width: min(50rem, 90%);
-  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.5); /* Sombra para dar profundidade */
+  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.5);
 }
 
 .modal-titulo {
@@ -153,10 +200,9 @@ async function cancelarEdicao() {
 .modal-form {
   display: flex;
   flex-direction: column;
-  gap: 1.8rem; /* Espaço entre os campos */
+  gap: 1.8rem;
 }
 
-/* O campo (Label + Input) */
 .modal-campo {
   display: flex;
   flex-direction: column;
@@ -169,7 +215,6 @@ async function cancelarEdicao() {
   margin-top: 1rem;
 }
 
-/* Texto do Label */
 .modal-campo span {
   color: var(--kp-creme);
   font-family: var(--font-body);
@@ -177,8 +222,18 @@ async function cancelarEdicao() {
   letter-spacing: 0.05em;
 }
 
-/* O Input em si */
-.modal-campo input {
+.campo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contador-texto {
+  font-size: 1.1rem !important;
+  opacity: 0.6;
+}
+
+.modal-campo input[type='text'] {
   width: 100%;
   padding: 1.2rem 1.4rem;
   border: 1px solid var(--kp-gold-border);
@@ -193,13 +248,23 @@ async function cancelarEdicao() {
     box-shadow 0.2s;
 }
 
-/* Efeito de foco (quando o usuário clica no input) */
-.modal-campo input:focus {
+.modal-campo input[type='text']:focus {
   border-color: var(--kp-gold);
   box-shadow: 0 0 0 0.3rem rgba(201, 166, 107, 0.15);
 }
 
-/* Botões */
+.input-clicavel {
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.input-clicavel:hover {
+  background: #fdfaf6;
+  border-color: var(--kp-gold);
+}
+
 .modal-acoes {
   display: flex;
   justify-content: center;
@@ -218,7 +283,6 @@ async function cancelarEdicao() {
   transition: all 0.2s ease;
 }
 
-/* Botão Salvar (Destaque) */
 .btn-salvar {
   background: var(--kp-gold);
   color: var(--kp-vinho);
@@ -229,7 +293,6 @@ async function cancelarEdicao() {
   background: var(--kp-creme);
 }
 
-/* Botão Cancelar (Secundário) */
 .btn-cancelar {
   background: transparent;
   color: var(--kp-creme);
@@ -257,14 +320,13 @@ async function cancelarEdicao() {
   transition:
     background 0.2s,
     transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-escolher-foto:hover {
   background: #7a2632;
-}
-
-.btn-escolher-foto:active {
-  transform: scale(0.98);
 }
 
 .input-escondido {
@@ -279,5 +341,107 @@ async function cancelarEdicao() {
   align-self: center;
   border: 1px solid var(--kp-gold);
   margin-top: 0.5rem;
+}
+
+.modal-overlay-bio {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 18, 10, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  backdrop-filter: blur(6px);
+}
+
+.modal-bio-conteudo {
+  background: var(--kp-creme, #f5ebdd);
+  padding: 3rem;
+  border: 1px solid var(--kp-gold);
+  border-radius: 1.4rem;
+  width: min(65rem, 90%);
+  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.6);
+}
+
+.modal-bio-titulo {
+  color: var(--kp-vinho, #6b1d2c);
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.modal-bio-subtitulo {
+  color: var(--kp-text, #4a2c2a);
+  font-family: var(--font-body);
+  font-size: 1.3rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  opacity: 0.7;
+}
+
+.textarea-wrapper {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.textarea-bio {
+  width: 100%;
+  padding: 1.5rem;
+  border: 1px solid var(--kp-gold-border, #c9a66b);
+  border-radius: 0.8rem;
+  background: #ffffff;
+  color: #3d2010;
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+  min-height: 18rem;
+  transition: border-color 0.2s;
+}
+
+.textarea-bio:focus {
+  border-color: var(--kp-vinho, #6b1d2c);
+}
+
+.contador-bio {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: #3d2010;
+  opacity: 0.6;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.modal-acoes-bio {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+.modal-acoes-bio .btn-salvar {
+  background: var(--kp-vinho, #6b1d2c);
+  color: var(--kp-creme, #f5ebdd);
+  border-color: var(--kp-vinho, #6b1d2c);
+}
+
+.modal-acoes-bio .btn-salvar:hover {
+  background: #4a0d1a;
+}
+
+.modal-acoes-bio .btn-cancelar {
+  background: transparent;
+  color: var(--kp-vinho, #6b1d2c);
+  border-color: var(--kp-vinho, #6b1d2c);
+}
+
+.modal-acoes-bio .btn-cancelar:hover {
+  background: rgba(107, 29, 44, 0.08);
 }
 </style>

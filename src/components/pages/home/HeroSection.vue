@@ -1,41 +1,53 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { whatsappLink } from '@/data/studio.js'
+import { apiFetch } from '@/client.js'
 
 const homeImagem = ref(null)
+const contato = ref(null)
 
 async function carregarHome() {
   try {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/home`)
     const dados = await res.json()
-    console.log('GET /home respondeu:', dados)
     if (dados.imagem_url) {
       homeImagem.value = `${import.meta.env.VITE_API_URL}/upload/home/${dados.imagem_url}?v=${dados.atualizado_em}`
-      console.log('URL final:', homeImagem.value)
-    } else {
-      console.log('Sem imagem no servidor — usando default')
     }
   } catch (e) {
     console.error('Erro ao carregar home:', e)
   }
 }
 
-onMounted(carregarHome)
+async function carregarContato() {
+  try {
+    contato.value = await apiFetch('/contato')
+  } catch (e) {
+    console.warn('Erro ao buscar contato:', e)
+  }
+}
+
+function whatsappLink() {
+  const numBruto = contato.value?.whatsapp || contato.value?.telefone || '5516992568812'
+  let num = String(numBruto).replace(/\D/g, '')
+  if (num && !num.startsWith('55')) num = '55' + num
+  return `https://wa.me/${num}?text=${encodeURIComponent('Olá! Gostaria de Agendar um Horário.')}`
+}
+
+onMounted(() => {
+  carregarHome()
+  carregarContato()
+})
 </script>
 
 <template>
   <section class="-section-hero">
     <img v-if="homeImagem" class="kenia__foto" :src="homeImagem" alt="Kenia Pinheiro" />
-    <img v-else class="kenia__foto" src="@/assets/images/home/cover01.jpeg" alt="Kenia Pinheiro" />
     <div class="-hero__overlay" aria-hidden="true"></div>
 
     <div class="-container">
       <div class="-hero__content">
         <span class="-hero__eyebrow">Sertãozinho · SP</span>
-
         <h1 class="-hero__logo">Kp</h1>
         <span class="-hero__studio">Studio</span>
-
         <p class="-hero__subtitle">Especialistas em realizar a beleza natural dos seus cachos</p>
 
         <div class="-hero__actions">
@@ -178,9 +190,11 @@ onMounted(carregarHome)
   border-color: var(--kp-gold);
 }
 
+/* --- HOVER ALTERADO AQUI --- */
 .-hero__btn--filled:hover {
-  background: transparent;
-  color: var(--kp-gold);
+  background: var(--kp-vinho);
+  color: var(--kp-creme);
+  border-color: var(--kp-vinho);
 }
 
 .-hero__scroll {

@@ -9,18 +9,14 @@ const categorias = ref([])
 const servicos = ref([])
 const carregando = ref(false)
 
-// Nova categoria
-const novaCategoria = ref('')
+// ESTA É A CORREÇÃO: A versão só muda quando os dados são carregados do banco!
+const versaoImagem = ref(Date.now())
 
-// Edição categoria
+const novaCategoria = ref('')
 const editandoCat = ref(null)
 const editCatNome = ref('')
 const editCatAtivo = ref(true)
-
-// Edição/novo serviço
-// { id: null|number, id_categoria, nome, ativo, imagem_url, file, preview }
 const editandoServ = ref(null)
-const inputFotoRef = ref(null)
 
 const servicosPorCategoria = computed(() => {
   const mapa = {}
@@ -34,12 +30,11 @@ const servicosPorCategoria = computed(() => {
 async function carregarDados() {
   carregando.value = true
   try {
-    const [cats, servs] = await Promise.all([
-      apiFetch('/categorias'),
-      apiFetch('/servicos'),
-    ])
+    const [cats, servs] = await Promise.all([apiFetch('/categorias'), apiFetch('/servicos')])
     categorias.value = cats
     servicos.value = servs
+    // Atualiza a versão APENAS quando o back retorna os dados novos
+    versaoImagem.value = Date.now()
   } catch (e) {
     console.error('Erro ao carregar:', e)
   } finally {
@@ -50,13 +45,13 @@ onMounted(() => {
   if (props.abrirCadastro) carregarDados()
 })
 watch(
-    () => props.abrirCadastro,
-    (aberto) => {
-      if (aberto) {
-        resetar()
-        carregarDados()
-      }
+  () => props.abrirCadastro,
+  (aberto) => {
+    if (aberto) {
+      resetar()
+      carregarDados()
     }
+  },
 )
 
 function resetar() {
@@ -65,13 +60,13 @@ function resetar() {
   cancelarEdicaoServ()
 }
 
+// A função agora usa a versão estável. Sem loop infinito.
 function urlImagem(nome) {
   if (!nome) return null
   if (nome.startsWith('http') || nome.startsWith('blob:')) return nome
-  return `${import.meta.env.VITE_API_URL}/upload/servico/${nome}`
+  return `${import.meta.env.VITE_API_URL}/upload/servico/${nome}?v=${versaoImagem.value}`
 }
 
-// ===== CRIAR CATEGORIA =====
 async function criarCategoria() {
   if (!novaCategoria.value.trim()) return
   try {
@@ -86,7 +81,6 @@ async function criarCategoria() {
   }
 }
 
-// ===== EDITAR CATEGORIA =====
 function iniciarEdicaoCat(c) {
   editandoCat.value = c.id
   editCatNome.value = c.nome
@@ -114,7 +108,6 @@ async function salvarEdicaoCat() {
   }
 }
 
-// ===== DELETAR CATEGORIA =====
 async function deletarCategoria(c) {
   try {
     const impacto = await apiFetch(`/categorias/${c.id}/impacto-delete`)
@@ -122,17 +115,10 @@ async function deletarCategoria(c) {
     if (impacto.pode_deletar) {
       ok = confirm(`Deletar "${c.nome}"?`)
     } else {
-      ok = confirm(
-          `⚠️ "${c.nome}" tem ${impacto.profissionais_afetadas} profissional(is) vinculada(s).\n\n` +
-          `Serviços: ${impacto.servicos_afetados} | Subserviços: ${impacto.subservicos_afetados}\n\n` +
-          `Você vai apagar: preços, durações, fotos, agendamentos.\n\n` +
-          `Recomendado: DESATIVE em vez de apagar.\n\nContinuar?`
-      )
+      ok = confirm(`⚠️ "${c.nome}" tem ${impacto.profissionais_afetadas} profissional(is) vinculada(s).\n\n` + `Serviços: ${impacto.servicos_afetados} | Subserviços: ${impacto.subservicos_afetados}\n\n` + `Você vai apagar: preços, durações, fotos, agendamentos.\n\n` + `Recomendado: DESATIVE em vez de apagar.\n\nContinuar?`)
     }
     if (!ok) return
-    const url = impacto.pode_deletar
-        ? `/categorias/${c.id}`
-        : `/categorias/${c.id}?force=true`
+    const url = impacto.pode_deletar ? `/categorias/${c.id}` : `/categorias/${c.id}?force=true`
     await apiFetch(url, { method: 'DELETE' })
     await carregarDados()
   } catch (e) {
@@ -140,7 +126,6 @@ async function deletarCategoria(c) {
   }
 }
 
-// ===== CRIAR SERVIÇO (entra direto em modo edição) =====
 function iniciarNovoServico(idCategoria) {
   cancelarEdicaoCat()
   cancelarEdicaoServ()
@@ -155,7 +140,6 @@ function iniciarNovoServico(idCategoria) {
   }
 }
 
-// ===== EDITAR SERVIÇO EXISTENTE =====
 function iniciarEdicaoServ(s) {
   cancelarEdicaoCat()
   cancelarEdicaoServ()
@@ -175,7 +159,6 @@ function cancelarEdicaoServ() {
     URL.revokeObjectURL(editandoServ.value.preview)
   }
   editandoServ.value = null
-  if (inputFotoRef.value) inputFotoRef.value.value = ''
 }
 
 function selecionarFoto(e) {
@@ -186,6 +169,7 @@ function selecionarFoto(e) {
   }
   editandoServ.value.file = file
   editandoServ.value.preview = URL.createObjectURL(file)
+  e.target.value = ''
 }
 
 async function salvarEdicaoServ() {
@@ -224,7 +208,8 @@ async function salvarEdicaoServ() {
     cancelarEdicaoServ()
     await carregarDados()
   } catch (err) {
-    alert('Erro: ' + err.message)
+    alert('Erro no salvamento: ' + err.message)
+    console.error(err)
   }
 }
 
@@ -235,17 +220,10 @@ async function deletarServico(s) {
     if (impacto.pode_deletar) {
       ok = confirm(`Deletar "${s.nome}"?`)
     } else {
-      ok = confirm(
-          `⚠️ "${s.nome}" tem ${impacto.profissionais_afetadas} profissional(is) vinculada(s).\n\n` +
-          `Subserviços: ${impacto.subservicos_afetados}\n\n` +
-          `Você vai apagar: preços, durações, fotos, agendamentos.\n\n` +
-          `Recomendado: DESATIVE em vez de apagar.\n\nContinuar?`
-      )
+      ok = confirm(`⚠️ "${s.nome}" tem ${impacto.profissionais_afetadas} profissional(is) vinculada(s).\n\n` + `Subserviços: ${impacto.subservicos_afetados}\n\n` + `Você vai apagar: preços, durações, fotos, agendamentos.\n\n` + `Recomendado: DESATIVE em vez de apagar.\n\nContinuar?`)
     }
     if (!ok) return
-    const url = impacto.pode_deletar
-        ? `/servicos/${s.id}`
-        : `/servicos/${s.id}?force=true`
+    const url = impacto.pode_deletar ? `/servicos/${s.id}` : `/servicos/${s.id}?force=true`
     await apiFetch(url, { method: 'DELETE' })
     await carregarDados()
   } catch (e) {
@@ -273,32 +251,16 @@ function fechar() {
       </header>
 
       <div class="modal-body">
-        <!-- Adicionar categoria (sticky no topo) -->
         <div class="add-cat-row">
-          <input
-              type="text"
-              v-model="novaCategoria"
-              placeholder="Nova categoria (ex: Cabelos)"
-              @keydown.enter.prevent="criarCategoria"
-          />
-          <button type="button" class="btn-adicionar" @click="criarCategoria">
-            + Adicionar Categoria
-          </button>
+          <input type="text" v-model="novaCategoria" placeholder="Nova categoria (ex: Cabelos)" @keydown.enter.prevent="criarCategoria" />
+          <button type="button" class="btn-adicionar" @click="criarCategoria">+ Adicionar Categoria</button>
         </div>
 
         <p v-if="carregando" class="empty-text">Carregando...</p>
-        <p v-else-if="categorias.length === 0" class="empty-text">
-          Nenhuma categoria cadastrada.
-        </p>
+        <p v-else-if="categorias.length === 0" class="empty-text">Nenhuma categoria cadastrada.</p>
 
         <div v-else class="categorias-lista">
-          <section
-              v-for="cat in categorias"
-              :key="cat.id"
-              class="cat-section"
-              :class="{ inativa: !cat.ativo }"
-          >
-            <!-- Header da categoria -->
+          <section v-for="cat in categorias" :key="cat.id" class="cat-section" :class="{ inativa: !cat.ativo }">
             <div class="cat-header">
               <template v-if="editandoCat === cat.id">
                 <input type="text" v-model="editCatNome" class="edit-input" />
@@ -329,15 +291,9 @@ function fechar() {
               </template>
             </div>
 
-            <!-- Serviços da categoria -->
             <div class="servicos-lista">
               <template v-for="serv in servicosPorCategoria[cat.id] || []" :key="serv.id">
-                <!-- Linha normal (escondida quando está editando ESSE serviço) -->
-                <div
-                    v-if="!(editandoServ && editandoServ.id === serv.id)"
-                    class="serv-row"
-                    :class="{ inativo: !serv.ativo }"
-                >
+                <div v-if="!(editandoServ && editandoServ.id === serv.id)" class="serv-row" :class="{ inativo: !serv.ativo }">
                   <div class="serv-foto-mini">
                     <img v-if="serv.imagem_url" :src="urlImagem(serv.imagem_url)" alt="" />
                     <div v-else class="serv-foto-vazia">
@@ -359,31 +315,16 @@ function fechar() {
                 </div>
               </template>
 
-              <!-- Bloco de edição (novo OU existente) -->
-              <div
-                  v-if="editandoServ && editandoServ.id_categoria === cat.id"
-                  class="serv-edit-form"
-              >
+              <div v-if="editandoServ && editandoServ.id_categoria === cat.id" class="serv-edit-form">
                 <div class="serv-edit-foto">
-                  <input
-                      ref="inputFotoRef"
-                      type="file"
-                      accept="image/*"
-                      class="input-escondido"
-                      @change="selecionarFoto"
-                  />
-                  <button
-                      type="button"
-                      class="btn-escolher-foto"
-                      @click="inputFotoRef.click()"
-                  >
+                  <label class="btn-escolher-foto">
                     <i class="fa-solid fa-camera"></i>
                     {{ editandoServ.preview ? 'Trocar foto' : 'Escolher foto' }}
-                  </button>
-                  <div v-if="!editandoServ.preview" class="preview-foto preview-vazio">
-                    Sem foto
-                  </div>
-                  <img v-else :src="editandoServ.preview" class="preview-foto" />
+                    <input type="file" accept="image/*" class="input-escondido" @change="selecionarFoto" />
+                  </label>
+
+                  <img v-if="editandoServ.preview" :src="editandoServ.preview" class="preview-foto" />
+                  <div v-else class="preview-foto preview-vazio">Sem foto</div>
                 </div>
 
                 <div class="serv-edit-campos">
@@ -398,30 +339,16 @@ function fechar() {
                 </div>
 
                 <div class="serv-edit-acoes">
-                  <button type="button" class="btn-cancelar" @click="cancelarEdicaoServ">
-                    Cancelar
-                  </button>
+                  <button type="button" class="btn-cancelar" @click="cancelarEdicaoServ">Cancelar</button>
                   <button type="button" class="btn-salvar" @click="salvarEdicaoServ">
                     {{ editandoServ.id === null ? 'Criar' : 'Salvar' }}
                   </button>
                 </div>
               </div>
 
-              <p
-                  v-if="(servicosPorCategoria[cat.id] || []).length === 0 && !(editandoServ && editandoServ.id_categoria === cat.id)"
-                  class="servicos-vazio"
-              >
-                Nenhum serviço cadastrado nesta categoria.
-              </p>
+              <p v-if="(servicosPorCategoria[cat.id] || []).length === 0 && !(editandoServ && editandoServ.id_categoria === cat.id)" class="servicos-vazio">Nenhum serviço cadastrado nesta categoria.</p>
 
-              <button
-                  v-if="!editandoServ"
-                  type="button"
-                  class="btn-add-serv"
-                  @click="iniciarNovoServico(cat.id)"
-              >
-                + Adicionar serviço em "{{ cat.nome }}"
-              </button>
+              <button v-if="!editandoServ" type="button" class="btn-add-serv" @click="iniciarNovoServico(cat.id)">+ Adicionar serviço em "{{ cat.nome }}"</button>
             </div>
           </section>
         </div>
@@ -431,6 +358,7 @@ function fechar() {
 </template>
 
 <style scoped>
+/* Mantenha o seu CSS original intacto aqui */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -441,7 +369,6 @@ function fechar() {
   z-index: 1000;
   backdrop-filter: blur(4px);
 }
-
 .modal-conteudo {
   background: var(--kp-mahogany);
   border: 1px solid var(--kp-gold-border);
@@ -453,7 +380,6 @@ function fechar() {
   overflow: hidden;
   box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.5);
 }
-
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -461,20 +387,17 @@ function fechar() {
   padding: 2.5rem 3rem;
   border-bottom: 1px solid rgba(201, 166, 107, 0.2);
 }
-
 .modal-titulo {
   color: var(--kp-gold);
   font-family: var(--font-display);
   font-size: 2.6rem;
   margin-bottom: 0.4rem;
 }
-
 .modal-subtitulo {
   color: var(--kp-creme-low);
   font-family: var(--font-body);
   font-size: 1.3rem;
 }
-
 .btn-fechar {
   background: transparent;
   border: none;
@@ -482,7 +405,6 @@ function fechar() {
   font-size: 2.2rem;
   cursor: pointer;
 }
-
 .modal-body {
   padding: 2rem 3rem;
   overflow-y: auto;
@@ -490,8 +412,6 @@ function fechar() {
   flex-direction: column;
   gap: 1.6rem;
 }
-
-/* ===== Adicionar categoria (sticky) ===== */
 .add-cat-row {
   display: flex;
   gap: 1rem;
@@ -527,8 +447,6 @@ function fechar() {
 .btn-adicionar:hover {
   background: var(--kp-creme);
 }
-
-/* ===== Categoria ===== */
 .categorias-lista {
   display: flex;
   flex-direction: column;
@@ -560,8 +478,6 @@ function fechar() {
   align-items: center;
   gap: 0.8rem;
 }
-
-/* ===== Serviços ===== */
 .servicos-lista {
   display: flex;
   flex-direction: column;
@@ -616,8 +532,6 @@ function fechar() {
   font-style: italic;
   padding: 0.6rem 0;
 }
-
-/* ===== Botão adicionar serviço ===== */
 .btn-add-serv {
   align-self: flex-start;
   padding: 0.6rem 1.2rem;
@@ -634,8 +548,6 @@ function fechar() {
   background: rgba(201, 166, 107, 0.1);
   border-style: solid;
 }
-
-/* ===== Edição inline de serviço ===== */
 .serv-edit-form {
   display: flex;
   flex-wrap: wrap;
@@ -677,6 +589,11 @@ function fechar() {
   color: var(--kp-creme);
   font-size: 1.2rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background 0.2s;
 }
 .btn-escolher-foto:hover {
   background: #7a2632;
@@ -694,8 +611,6 @@ function fechar() {
   align-self: flex-end;
   margin-left: auto;
 }
-
-/* ===== Campos e botões ===== */
 .campo {
   display: flex;
   flex-direction: column;
@@ -719,7 +634,6 @@ function fechar() {
 .campo input[type='text']:focus {
   border-color: var(--kp-gold);
 }
-
 .toggle-ativo {
   display: flex;
   align-items: center;
@@ -735,7 +649,6 @@ function fechar() {
   height: 1.6rem;
   cursor: pointer;
 }
-
 .edit-input {
   flex: 1;
   padding: 0.8rem 1.1rem;
@@ -746,7 +659,6 @@ function fechar() {
   font-size: 1.3rem;
   outline: none;
 }
-
 .badge-inativo {
   padding: 0.15rem 0.6rem;
   background: rgba(255, 77, 77, 0.15);
@@ -757,12 +669,10 @@ function fechar() {
   font-weight: bold;
   text-transform: uppercase;
 }
-
 .acoes {
   display: flex;
   gap: 0.5rem;
 }
-
 .btn-small {
   padding: 0.6rem 1rem;
   border-radius: 0.4rem;
@@ -822,11 +732,9 @@ function fechar() {
 .btn-salvar:hover {
   background: var(--kp-creme);
 }
-
 .input-escondido {
   display: none;
 }
-
 .empty-text {
   color: var(--kp-creme-low);
   font-family: var(--font-body);
@@ -835,7 +743,6 @@ function fechar() {
   padding: 2rem 0;
   font-style: italic;
 }
-
 @media (max-width: 768px) {
   .modal-conteudo {
     width: 95%;

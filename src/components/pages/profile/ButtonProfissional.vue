@@ -12,7 +12,7 @@ const abrirPacotes = ref(false)
   <section class="profile__options">
     <button @click="abrirSubservico = true" class="profile__button">Subserviço</button>
     <button @click="editarSubservico = true" class="profile__button">Editar - Subserviço</button>
-    <button @click="abrirPacotes = true" class="profile__button">pacotes</button>
+    <button @click="abrirPacotes = true" class="profile__button">Pacotes</button>
 
     <!-- button class="profile__button" type="button">Cadastrar horários</button -->
   </section>

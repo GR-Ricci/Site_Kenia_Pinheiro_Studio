@@ -1,10 +1,16 @@
 <script setup>
 import ModalShare from '@/components/pages/invite/ModalShare.vue'
 import { apiFetch } from '@/client.js'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
-//Flag Modularização
+// Flag Modularização
 const modalAberto = ref(false)
+const carregando = ref(false)
+
+// Controle de Acesso
+const isSuperAdmin = ref(false)
+const acessoNegado = ref(false)
+const verificando = ref(true)
 
 // -> Criar Convite
 const convite = ref({
@@ -12,37 +18,81 @@ const convite = ref({
   link: '',
   expira_em: '',
 })
-async function gerarConvite(tipo) {
+
+// -> VERIFICA DIRETO NO BACK-END
+async function verificarAcesso() {
   try {
-    const dados = await apiFetch('/invites', { method: 'POST', body: JSON.stringify({ tipo: tipo }) })
+    // Puxa os dados reais de quem está logado no banco
+    const me = await apiFetch('/staff/me')
+
+    // Se for ADMIN e o banco disser que é superadmin, libera
+    if (me.tipo === 'ADMIN' && me.superadmin) {
+      isSuperAdmin.value = true
+    } else {
+      acessoNegado.value = true
+    }
+  } catch (erro) {
+    console.error('Erro ao verificar acesso:', erro)
+    acessoNegado.value = true
+  } finally {
+    verificando.value = false
+  }
+}
+
+onMounted(verificarAcesso)
+
+async function gerarConvite(tipo) {
+  carregando.value = true
+  try {
+    const dados = await apiFetch('/invites', {
+      method: 'POST',
+      body: JSON.stringify({ tipo: tipo }),
+    })
     convite.value = dados
+    modalAberto.value = true
   } catch (erro) {
     console.error('Erro ao gerar convite', erro.message)
-    convite.value.link = 'Erro ao gerar convite'
+    alert('Erro ao gerar convite: ' + erro.message)
+  } finally {
+    carregando.value = false
   }
 }
 </script>
 
 <template>
   <main class="invite">
-    <section class="invite__card">
+    <!-- CARREGANDO PERMISSÃO -->
+    <section v-if="verificando" class="invite__card" style="text-align: center">
+      <p style="color: var(--kp-creme)">Verificando permissões...</p>
+    </section>
+
+    <!-- ACESSO NEGADO -->
+    <section v-else-if="acessoNegado" class="invite__card" style="text-align: center">
+      <i class="fa-solid fa-lock" style="font-size: 4rem; color: var(--kp-gold); margin-bottom: 2rem"></i>
+      <h1 class="invite__title">Acesso Restrito</h1>
+      <p class="invite__description">Apenas administradores com nível Super Admin podem gerar convites.</p>
+      <button @click="$router.push('/')" class="invite__option" style="margin-top: 2rem; text-align: center; justify-content: center">Voltar para a Home</button>
+    </section>
+
+    <!-- ÁREA LIBERADA -->
+    <section v-else class="invite__card">
       <p class="invite__eyebrow">Área administrativa</p>
       <h1 class="invite__title">Gerar convite</h1>
       <p class="invite__description">Escolha o tipo de profissional que deseja cadastrar.</p>
 
-      <!-- prettier-ignore -->
       <div class="invite__options">
-
-        <button class="invite__option" type="button" @click="modalAberto = true; gerarConvite('PROFISSIONAL')">
+        <button class="invite__option" type="button" :disabled="carregando" @click="gerarConvite('PROFISSIONAL')">
           <span class="invite__option-title">Profissional - Comum</span>
           <span class="invite__option-description"> Acesso apenas às funções relacionadas ao próprio perfil. </span>
         </button>
 
-        <button class="invite__option" type="button" @click="modalAberto = true; gerarConvite('ADMIN')">
+        <button class="invite__option" type="button" :disabled="carregando" @click="gerarConvite('ADMIN')">
           <span class="invite__option-title">Profissional - Administrador</span>
           <span class="invite__option-description"> Acesso às configurações e ao gerenciamento do espaço. </span>
         </button>
       </div>
+
+      <p v-if="carregando" style="color: var(--kp-gold); margin-top: 2rem">Gerando convite...</p>
     </section>
 
     <ModalShare :modal-aberto="modalAberto" :convite="convite.link" @close="modalAberto = false" />
@@ -112,9 +162,15 @@ async function gerarConvite(tipo) {
   transition:
     border-color 180ms ease,
     background 180ms ease;
+  cursor: pointer;
 }
 
-.invite__option:hover {
+.invite__option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.invite__option:hover:not(:disabled) {
   border-color: var(--kp-gold);
   background: rgba(245, 235, 221, 0.16);
 }
