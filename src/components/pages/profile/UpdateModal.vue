@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { apiFetch } from '@/client.js'
 
 const props = defineProps({
@@ -8,10 +8,29 @@ const props = defineProps({
 })
 const emit = defineEmits(['close', 'saved'])
 
-//-> Arquivo
-const versaoFoto = ref(0)
-
+// -> Estado da foto
+const versaoFoto = ref(Date.now())
+const fotoNoPreview = ref(false) // true quando o usuário escolhe uma nova foto ainda não salva
 const inputArquivo = ref(null)
+
+// Mostra a imagem salva (perfil/) por padrão;
+// se já escolheu nova foto, mostra o preview (perfilpreview/).
+const urlFoto = computed(() => {
+  if (!props.perfilEditado?.imagem_url) return null
+  const pasta = fotoNoPreview.value ? 'perfilpreview' : 'perfil'
+  return `${import.meta.env.VITE_API_URL}/upload/${pasta}/${props.perfilEditado.imagem_url}?v=${versaoFoto.value}`
+})
+
+// Reseta flags ao abrir o modal
+watch(
+  () => props.modalEdicao,
+  (aberto) => {
+    if (aberto) {
+      fotoNoPreview.value = false
+      versaoFoto.value = Date.now()
+    }
+  },
+)
 
 async function enviarFoto(evento) {
   const file = evento.target.files[0]
@@ -23,13 +42,14 @@ async function enviarFoto(evento) {
   try {
     const dados = await apiFetch('/upload/perfil', { method: 'POST', body: form })
     props.perfilEditado.imagem_url = dados.imagem_url
-    versaoFoto.value++
+    fotoNoPreview.value = true
+    versaoFoto.value = Date.now()
   } catch (erro) {
     console.error('Erro no upload:', erro.message)
   }
 }
 
-//-> Perfil
+// -> Perfil
 async function salvarPerfil() {
   try {
     const dados = await apiFetch('/profile', {
@@ -45,7 +65,8 @@ async function salvarPerfil() {
 }
 
 async function cancelarEdicao() {
-  if (props.perfilEditado.imagem_url) {
+  // Só apaga do perfilpreview se o usuário tiver subido uma foto nova
+  if (fotoNoPreview.value && props.perfilEditado.imagem_url) {
     try {
       await apiFetch(`/upload/perfil/${props.perfilEditado.imagem_url}`, { method: 'DELETE' })
     } catch (erro) {
@@ -85,7 +106,7 @@ async function cancelarEdicao() {
           <button type="submit" class="btn-salvar">Salvar</button>
         </div>
 
-        <img v-if="perfilEditado.imagem_url" :src="`http://localhost:8000/upload/perfilpreview/${perfilEditado.imagem_url}?v=${versaoFoto}`" class="preview-foto" />
+        <img v-if="urlFoto" :src="urlFoto" class="preview-foto" />
       </form>
     </div>
   </div>
