@@ -1,0 +1,1642 @@
+{
+  "funcionamento": [
+    {
+      "id": 1,
+      "dia": 0,
+      "abertura": null,
+      "fechamento": null
+    },
+    {
+      "id": 2,
+      "dia": 1,
+      "abertura": "09:00:00",
+      "fechamento": "19:00:00"
+    },
+    {
+      "id": 3,
+      "dia": 2,
+      "abertura": "09:00:00",
+      "fechamento": "19:00:00"
+    },
+    {
+      "id": 4,
+      "dia": 3,
+      "abertura": "09:00:00",
+      "fechamento": "19:00:00"
+    },
+    {
+      "id": 5,
+      "dia": 4,
+      "abertura": "09:00:00",
+      "fechamento": "19:00:00"
+    },
+    {
+      "id": 6,
+      "dia": 5,
+      "abertura": "09:00:00",
+      "fechamento": "19:00:00"
+    },
+    {
+      "id": 7,
+      "dia": 6,
+      "abertura": "09:00:00",
+      "fechamento": "16:00:00"
+    }
+  ],
+  "contato": [
+    {
+      "id": 1,
+      "telefone": "00000000000",
+      "whatsapp": "00000000000",
+      "email": "contato@exemplo.invalid",
+      "rede_social": "@perfil_exemplo",
+      "endereco": "Endereço de demonstração — substituir no painel"
+    }
+  ],
+  "categorias": [
+    {
+      "id": 1,
+      "nome": "Cabelos",
+      "ordem_exibicao": 1,
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "nome": "Unhas",
+      "ordem_exibicao": 2,
+      "ativo": true
+    },
+    {
+      "id": 3,
+      "nome": "Estética",
+      "ordem_exibicao": 3,
+      "ativo": true
+    },
+    {
+      "id": 4,
+      "nome": "Eventos",
+      "ordem_exibicao": 4,
+      "ativo": true
+    }
+  ],
+  "carrossel": [
+    {
+      "id": 1,
+      "id_categoria": 1,
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 1
+    },
+    {
+      "id": 2,
+      "id_categoria": 2,
+      "imagem_url": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80",
+      "ordem_exibicao": 2
+    },
+    {
+      "id": 3,
+      "id_categoria": 3,
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 3
+    },
+    {
+      "id": 4,
+      "id_categoria": 4,
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "ordem_exibicao": 4
+    }
+  ],
+  "servicos": [
+    {
+      "id": 1,
+      "id_categoria": 1,
+      "nome": "Penteados",
+      "ordem_exibicao": 1,
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "descricao": "Penteados para o dia a dia e ocasiões especiais",
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "id_categoria": 1,
+      "nome": "Cortes",
+      "ordem_exibicao": 2,
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "descricao": "Cortes e finalizações para diferentes estilos",
+      "ativo": true
+    },
+    {
+      "id": 3,
+      "id_categoria": 1,
+      "nome": "Coloração",
+      "ordem_exibicao": 3,
+      "imagem_url": "https://images.unsplash.com/photo-1785456283212-338f5bc44d50?w=600&q=80",
+      "descricao": "Colorações, mechas e iluminação dos fios",
+      "ativo": true
+    },
+    {
+      "id": 4,
+      "id_categoria": 1,
+      "nome": "Tratamentos capilares",
+      "ordem_exibicao": 4,
+      "imagem_url": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80",
+      "descricao": "Cuidados para hidratar e fortalecer os fios",
+      "ativo": true
+    },
+    {
+      "id": 5,
+      "id_categoria": 2,
+      "nome": "Manicure",
+      "ordem_exibicao": 5,
+      "imagem_url": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80",
+      "descricao": "Cuidados e acabamento para as mãos",
+      "ativo": true
+    },
+    {
+      "id": 6,
+      "id_categoria": 2,
+      "nome": "Pedicure",
+      "ordem_exibicao": 6,
+      "imagem_url": "https://images.unsplash.com/photo-1779636198585-658170ee0283?w=600&q=80",
+      "descricao": "Cuidados e acabamento para os pés",
+      "ativo": true
+    },
+    {
+      "id": 7,
+      "id_categoria": 3,
+      "nome": "Sobrancelhas",
+      "ordem_exibicao": 7,
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "descricao": "Design e cuidados para realçar o olhar",
+      "ativo": true
+    },
+    {
+      "id": 8,
+      "id_categoria": 3,
+      "nome": "Depilação",
+      "ordem_exibicao": 8,
+      "imagem_url": "https://images.unsplash.com/photo-1733145820333-6fa6ed6f8f5d?w=600&q=80",
+      "descricao": "Depilação em diferentes regiões do corpo",
+      "ativo": true
+    },
+    {
+      "id": 9,
+      "id_categoria": 3,
+      "nome": "Cuidados faciais",
+      "ordem_exibicao": 9,
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "descricao": "Tratamentos e cuidados para o rosto",
+      "ativo": true
+    },
+    {
+      "id": 10,
+      "id_categoria": 4,
+      "nome": "Maquiagem",
+      "ordem_exibicao": 10,
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "descricao": "Maquiagens para eventos e ocasiões especiais",
+      "ativo": true
+    },
+    {
+      "id": 11,
+      "id_categoria": 4,
+      "nome": "Produção para eventos",
+      "ordem_exibicao": 11,
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "descricao": "Preparação de cabelo e maquiagem para eventos",
+      "ativo": true
+    }
+  ],
+  "subservicos": [
+    {
+      "id": 1,
+      "id_servico": 1,
+      "nome": "Penteado simples",
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "id_servico": 1,
+      "nome": "Penteado para festa",
+      "ativo": true
+    },
+    {
+      "id": 3,
+      "id_servico": 1,
+      "nome": "Tranças",
+      "ativo": true
+    },
+    {
+      "id": 4,
+      "id_servico": 1,
+      "nome": "Penteado de noiva",
+      "ativo": true
+    },
+    {
+      "id": 5,
+      "id_servico": 2,
+      "nome": "Corte feminino",
+      "ativo": true
+    },
+    {
+      "id": 6,
+      "id_servico": 2,
+      "nome": "Corte de franja",
+      "ativo": true
+    },
+    {
+      "id": 7,
+      "id_servico": 2,
+      "nome": "Corte infantil",
+      "ativo": true
+    },
+    {
+      "id": 8,
+      "id_servico": 3,
+      "nome": "Coloração completa",
+      "ativo": true
+    },
+    {
+      "id": 9,
+      "id_servico": 3,
+      "nome": "Luzes e mechas",
+      "ativo": true
+    },
+    {
+      "id": 10,
+      "id_servico": 3,
+      "nome": "Retoque de raiz",
+      "ativo": true
+    },
+    {
+      "id": 11,
+      "id_servico": 4,
+      "nome": "Hidratação",
+      "ativo": true
+    },
+    {
+      "id": 12,
+      "id_servico": 4,
+      "nome": "Reconstrução capilar",
+      "ativo": true
+    },
+    {
+      "id": 13,
+      "id_servico": 4,
+      "nome": "Cronograma capilar",
+      "ativo": true
+    },
+    {
+      "id": 14,
+      "id_servico": 5,
+      "nome": "Manicure tradicional",
+      "ativo": true
+    },
+    {
+      "id": 15,
+      "id_servico": 5,
+      "nome": "Esmaltação em gel",
+      "ativo": true
+    },
+    {
+      "id": 16,
+      "id_servico": 5,
+      "nome": "Nail art",
+      "ativo": true
+    },
+    {
+      "id": 17,
+      "id_servico": 6,
+      "nome": "Pedicure tradicional",
+      "ativo": true
+    },
+    {
+      "id": 18,
+      "id_servico": 6,
+      "nome": "Spa dos pés",
+      "ativo": true
+    },
+    {
+      "id": 19,
+      "id_servico": 6,
+      "nome": "Pedicure com gel",
+      "ativo": true
+    },
+    {
+      "id": 20,
+      "id_servico": 7,
+      "nome": "Design de sobrancelhas",
+      "ativo": true
+    },
+    {
+      "id": 21,
+      "id_servico": 7,
+      "nome": "Design com henna",
+      "ativo": true
+    },
+    {
+      "id": 22,
+      "id_servico": 7,
+      "nome": "Brow lamination",
+      "ativo": true
+    },
+    {
+      "id": 23,
+      "id_servico": 8,
+      "nome": "Buço",
+      "ativo": true
+    },
+    {
+      "id": 24,
+      "id_servico": 8,
+      "nome": "Axilas",
+      "ativo": true
+    },
+    {
+      "id": 25,
+      "id_servico": 8,
+      "nome": "Pernas",
+      "ativo": true
+    },
+    {
+      "id": 26,
+      "id_servico": 9,
+      "nome": "Limpeza de pele",
+      "ativo": true
+    },
+    {
+      "id": 27,
+      "id_servico": 9,
+      "nome": "Hidratação facial",
+      "ativo": true
+    },
+    {
+      "id": 28,
+      "id_servico": 9,
+      "nome": "Máscara facial",
+      "ativo": true
+    },
+    {
+      "id": 29,
+      "id_servico": 10,
+      "nome": "Maquiagem social",
+      "ativo": true
+    },
+    {
+      "id": 30,
+      "id_servico": 10,
+      "nome": "Maquiagem de noiva",
+      "ativo": true
+    },
+    {
+      "id": 31,
+      "id_servico": 10,
+      "nome": "Maquiagem artística",
+      "ativo": true
+    },
+    {
+      "id": 32,
+      "id_servico": 11,
+      "nome": "Produção para formatura",
+      "ativo": true
+    },
+    {
+      "id": 33,
+      "id_servico": 11,
+      "nome": "Produção para madrinha",
+      "ativo": true
+    },
+    {
+      "id": 34,
+      "id_servico": 11,
+      "nome": "Produção para ensaio fotográfico",
+      "ativo": true
+    }
+  ],
+  "profissionais": [
+    {
+      "id": 1,
+      "id_usuario": null,
+      "nome": "Kênia",
+      "bio": "Penteados, cortes e produção para eventos.",
+      "imagem_url": "https://placehold.co/400x400/png?text=Kenia",
+      "ordem_exibicao": 1,
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "id_usuario": null,
+      "nome": "Ana",
+      "bio": "Coloração, tratamentos capilares e penteados.",
+      "imagem_url": "https://placehold.co/400x400/png?text=Ana",
+      "ordem_exibicao": 2,
+      "ativo": true
+    },
+    {
+      "id": 3,
+      "id_usuario": null,
+      "nome": "Bia",
+      "bio": "Manicure, pedicure e nail art.",
+      "imagem_url": "https://placehold.co/400x400/png?text=Bia",
+      "ordem_exibicao": 3,
+      "ativo": true
+    },
+    {
+      "id": 4,
+      "id_usuario": null,
+      "nome": "Luiza",
+      "bio": "Sobrancelhas, depilação e cuidados faciais.",
+      "imagem_url": "https://placehold.co/400x400/png?text=Luiza",
+      "ordem_exibicao": 4,
+      "ativo": true
+    },
+    {
+      "id": 5,
+      "id_usuario": null,
+      "nome": "Marina",
+      "bio": "Maquiagem e produção para ocasiões especiais.",
+      "imagem_url": "https://placehold.co/400x400/png?text=Marina",
+      "ordem_exibicao": 5,
+      "ativo": true
+    }
+  ],
+  "profissional_subservico": [
+    {
+      "id_profissional": 1,
+      "id_subservico": 1,
+      "ativo": true,
+      "preco": 70.0,
+      "duracao_minutos": 60,
+      "descricao": "Penteado simples com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 1
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 2,
+      "ativo": true,
+      "preco": 130.0,
+      "duracao_minutos": 90,
+      "descricao": "Penteado para festa com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 2
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 4,
+      "ativo": true,
+      "preco": 290.0,
+      "duracao_minutos": 120,
+      "descricao": "Penteado de noiva com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 3
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 5,
+      "ativo": true,
+      "preco": 75.0,
+      "duracao_minutos": 60,
+      "descricao": "Corte feminino com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 4
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 6,
+      "ativo": true,
+      "preco": 30.0,
+      "duracao_minutos": 25,
+      "descricao": "Corte de franja com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 5
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 7,
+      "ativo": true,
+      "preco": 50.0,
+      "duracao_minutos": 40,
+      "descricao": "Corte infantil com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 6
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 11,
+      "ativo": true,
+      "preco": 85.0,
+      "duracao_minutos": 60,
+      "descricao": "Hidratação com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80",
+      "ordem_exibicao": 7
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 12,
+      "ativo": true,
+      "preco": 110.0,
+      "duracao_minutos": 75,
+      "descricao": "Reconstrução capilar com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80",
+      "ordem_exibicao": 8
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 13,
+      "ativo": true,
+      "preco": 140.0,
+      "duracao_minutos": 90,
+      "descricao": "Cronograma capilar com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80",
+      "ordem_exibicao": 9
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 29,
+      "ativo": true,
+      "preco": 135.0,
+      "duracao_minutos": 75,
+      "descricao": "Maquiagem social com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "ordem_exibicao": 10
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 30,
+      "ativo": true,
+      "preco": 280.0,
+      "duracao_minutos": 120,
+      "descricao": "Maquiagem de noiva com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "ordem_exibicao": 11
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 32,
+      "ativo": true,
+      "preco": 270.0,
+      "duracao_minutos": 150,
+      "descricao": "Produção para formatura com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 12
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 33,
+      "ativo": true,
+      "preco": 310.0,
+      "duracao_minutos": 150,
+      "descricao": "Produção para madrinha com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 13
+    },
+    {
+      "id_profissional": 1,
+      "id_subservico": 34,
+      "ativo": true,
+      "preco": 250.0,
+      "duracao_minutos": 135,
+      "descricao": "Produção para ensaio fotográfico com Kênia.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 14
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 1,
+      "ativo": true,
+      "preco": 85.0,
+      "duracao_minutos": 60,
+      "descricao": "Penteado simples com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 1
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 2,
+      "ativo": true,
+      "preco": 145.0,
+      "duracao_minutos": 90,
+      "descricao": "Penteado para festa com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 2
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 3,
+      "ativo": true,
+      "preco": 165.0,
+      "duracao_minutos": 120,
+      "descricao": "Tranças com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 3
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 5,
+      "ativo": true,
+      "preco": 90.0,
+      "duracao_minutos": 60,
+      "descricao": "Corte feminino com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 4
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 6,
+      "ativo": true,
+      "preco": 45.0,
+      "duracao_minutos": 25,
+      "descricao": "Corte de franja com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 5
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 7,
+      "ativo": true,
+      "preco": 65.0,
+      "duracao_minutos": 40,
+      "descricao": "Corte infantil com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 6
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 8,
+      "ativo": true,
+      "preco": 195.0,
+      "duracao_minutos": 120,
+      "descricao": "Coloração completa com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1785456283212-338f5bc44d50?w=600&q=80",
+      "ordem_exibicao": 7
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 9,
+      "ativo": true,
+      "preco": 315.0,
+      "duracao_minutos": 180,
+      "descricao": "Luzes e mechas com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1785456283212-338f5bc44d50?w=600&q=80",
+      "ordem_exibicao": 8
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 10,
+      "ativo": true,
+      "preco": 135.0,
+      "duracao_minutos": 90,
+      "descricao": "Retoque de raiz com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1785456283212-338f5bc44d50?w=600&q=80",
+      "ordem_exibicao": 9
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 11,
+      "ativo": true,
+      "preco": 100.0,
+      "duracao_minutos": 60,
+      "descricao": "Hidratação com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80",
+      "ordem_exibicao": 10
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 12,
+      "ativo": true,
+      "preco": 125.0,
+      "duracao_minutos": 75,
+      "descricao": "Reconstrução capilar com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80",
+      "ordem_exibicao": 11
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 13,
+      "ativo": true,
+      "preco": 155.0,
+      "duracao_minutos": 90,
+      "descricao": "Cronograma capilar com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80",
+      "ordem_exibicao": 12
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 32,
+      "ativo": true,
+      "preco": 285.0,
+      "duracao_minutos": 150,
+      "descricao": "Produção para formatura com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 13
+    },
+    {
+      "id_profissional": 2,
+      "id_subservico": 34,
+      "ativo": true,
+      "preco": 265.0,
+      "duracao_minutos": 135,
+      "descricao": "Produção para ensaio fotográfico com Ana.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 14
+    },
+    {
+      "id_profissional": 3,
+      "id_subservico": 14,
+      "ativo": true,
+      "preco": 35.0,
+      "duracao_minutos": 45,
+      "descricao": "Manicure tradicional com Bia.",
+      "imagem_url": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80",
+      "ordem_exibicao": 1
+    },
+    {
+      "id_profissional": 3,
+      "id_subservico": 15,
+      "ativo": true,
+      "preco": 75.0,
+      "duracao_minutos": 75,
+      "descricao": "Esmaltação em gel com Bia.",
+      "imagem_url": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80",
+      "ordem_exibicao": 2
+    },
+    {
+      "id_profissional": 3,
+      "id_subservico": 16,
+      "ativo": true,
+      "preco": 95.0,
+      "duracao_minutos": 90,
+      "descricao": "Nail art com Bia.",
+      "imagem_url": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80",
+      "ordem_exibicao": 3
+    },
+    {
+      "id_profissional": 3,
+      "id_subservico": 17,
+      "ativo": true,
+      "preco": 40.0,
+      "duracao_minutos": 50,
+      "descricao": "Pedicure tradicional com Bia.",
+      "imagem_url": "https://images.unsplash.com/photo-1779636198585-658170ee0283?w=600&q=80",
+      "ordem_exibicao": 4
+    },
+    {
+      "id_profissional": 3,
+      "id_subservico": 18,
+      "ativo": true,
+      "preco": 85.0,
+      "duracao_minutos": 80,
+      "descricao": "Spa dos pés com Bia.",
+      "imagem_url": "https://images.unsplash.com/photo-1779636198585-658170ee0283?w=600&q=80",
+      "ordem_exibicao": 5
+    },
+    {
+      "id_profissional": 3,
+      "id_subservico": 19,
+      "ativo": true,
+      "preco": 80.0,
+      "duracao_minutos": 70,
+      "descricao": "Pedicure com gel com Bia.",
+      "imagem_url": "https://images.unsplash.com/photo-1779636198585-658170ee0283?w=600&q=80",
+      "ordem_exibicao": 6
+    },
+    {
+      "id_profissional": 3,
+      "id_subservico": 20,
+      "ativo": true,
+      "preco": 40.0,
+      "duracao_minutos": 35,
+      "descricao": "Design de sobrancelhas com Bia.",
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 7
+    },
+    {
+      "id_profissional": 3,
+      "id_subservico": 21,
+      "ativo": true,
+      "preco": 60.0,
+      "duracao_minutos": 50,
+      "descricao": "Design com henna com Bia.",
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 8
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 20,
+      "ativo": true,
+      "preco": 50.0,
+      "duracao_minutos": 35,
+      "descricao": "Design de sobrancelhas com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 1
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 21,
+      "ativo": true,
+      "preco": 70.0,
+      "duracao_minutos": 50,
+      "descricao": "Design com henna com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 2
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 22,
+      "ativo": true,
+      "preco": 125.0,
+      "duracao_minutos": 70,
+      "descricao": "Brow lamination com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 3
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 23,
+      "ativo": true,
+      "preco": 35.0,
+      "duracao_minutos": 20,
+      "descricao": "Buço com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1733145820333-6fa6ed6f8f5d?w=600&q=80",
+      "ordem_exibicao": 4
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 24,
+      "ativo": true,
+      "preco": 50.0,
+      "duracao_minutos": 30,
+      "descricao": "Axilas com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1733145820333-6fa6ed6f8f5d?w=600&q=80",
+      "ordem_exibicao": 5
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 25,
+      "ativo": true,
+      "preco": 100.0,
+      "duracao_minutos": 70,
+      "descricao": "Pernas com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1733145820333-6fa6ed6f8f5d?w=600&q=80",
+      "ordem_exibicao": 6
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 26,
+      "ativo": true,
+      "preco": 135.0,
+      "duracao_minutos": 90,
+      "descricao": "Limpeza de pele com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 7
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 27,
+      "ativo": true,
+      "preco": 105.0,
+      "duracao_minutos": 60,
+      "descricao": "Hidratação facial com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 8
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 28,
+      "ativo": true,
+      "preco": 70.0,
+      "duracao_minutos": 40,
+      "descricao": "Máscara facial com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 9
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 29,
+      "ativo": true,
+      "preco": 140.0,
+      "duracao_minutos": 75,
+      "descricao": "Maquiagem social com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "ordem_exibicao": 10
+    },
+    {
+      "id_profissional": 4,
+      "id_subservico": 31,
+      "ativo": true,
+      "preco": 195.0,
+      "duracao_minutos": 105,
+      "descricao": "Maquiagem artística com Luiza.",
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "ordem_exibicao": 11
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 1,
+      "ativo": true,
+      "preco": 95.0,
+      "duracao_minutos": 70,
+      "descricao": "Penteado simples com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 1
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 2,
+      "ativo": true,
+      "preco": 155.0,
+      "duracao_minutos": 100,
+      "descricao": "Penteado para festa com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 2
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 3,
+      "ativo": true,
+      "preco": 175.0,
+      "duracao_minutos": 130,
+      "descricao": "Tranças com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 3
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 4,
+      "ativo": true,
+      "preco": 315.0,
+      "duracao_minutos": 130,
+      "descricao": "Penteado de noiva com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 4
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 8,
+      "ativo": true,
+      "preco": 205.0,
+      "duracao_minutos": 120,
+      "descricao": "Coloração completa com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1785456283212-338f5bc44d50?w=600&q=80",
+      "ordem_exibicao": 5
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 10,
+      "ativo": true,
+      "preco": 145.0,
+      "duracao_minutos": 90,
+      "descricao": "Retoque de raiz com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1785456283212-338f5bc44d50?w=600&q=80",
+      "ordem_exibicao": 6
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 29,
+      "ativo": true,
+      "preco": 160.0,
+      "duracao_minutos": 75,
+      "descricao": "Maquiagem social com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "ordem_exibicao": 7
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 30,
+      "ativo": true,
+      "preco": 305.0,
+      "duracao_minutos": 120,
+      "descricao": "Maquiagem de noiva com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "ordem_exibicao": 8
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 31,
+      "ativo": true,
+      "preco": 215.0,
+      "duracao_minutos": 105,
+      "descricao": "Maquiagem artística com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "ordem_exibicao": 9
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 32,
+      "ativo": true,
+      "preco": 295.0,
+      "duracao_minutos": 160,
+      "descricao": "Produção para formatura com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 10
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 33,
+      "ativo": true,
+      "preco": 335.0,
+      "duracao_minutos": 160,
+      "descricao": "Produção para madrinha com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 11
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 34,
+      "ativo": true,
+      "preco": 275.0,
+      "duracao_minutos": 145,
+      "descricao": "Produção para ensaio fotográfico com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 12
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 14,
+      "ativo": true,
+      "preco": 65.0,
+      "duracao_minutos": 45,
+      "descricao": "Manicure tradicional com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80",
+      "ordem_exibicao": 13
+    },
+    {
+      "id_profissional": 5,
+      "id_subservico": 15,
+      "ativo": true,
+      "preco": 105.0,
+      "duracao_minutos": 75,
+      "descricao": "Esmaltação em gel com Marina.",
+      "imagem_url": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80",
+      "ordem_exibicao": 14
+    }
+  ],
+  "pacotes": [
+    {
+      "id": 1,
+      "id_categoria": 4,
+      "nome": "Dia da Noiva",
+      "preco": 650.0,
+      "ordem_exibicao": 1,
+      "imagem_url": "https://images.unsplash.com/photo-1549236177-f9b0031756eb?w=600&q=80",
+      "descricao": "Penteado de noiva com Kênia e maquiagem de noiva com Marina.",
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "id_categoria": 4,
+      "nome": "Pronta para a Festa",
+      "preco": 290.0,
+      "ordem_exibicao": 2,
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "descricao": "Penteado para festa e maquiagem social.",
+      "ativo": true
+    },
+    {
+      "id": 3,
+      "id_categoria": 2,
+      "nome": "Dia de Autocuidado",
+      "preco": 150.0,
+      "ordem_exibicao": 3,
+      "imagem_url": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80",
+      "descricao": "Manicure e spa dos pés.",
+      "ativo": true
+    }
+  ],
+  "pacote_item": [
+    {
+      "id": 11,
+      "id_pacote": 1,
+      "id_profissional": 1,
+      "id_subservico": 4,
+      "quantidade": 1,
+      "ordem_exibicao": 1
+    },
+    {
+      "id": 12,
+      "id_pacote": 1,
+      "id_profissional": 5,
+      "id_subservico": 30,
+      "quantidade": 1,
+      "ordem_exibicao": 2
+    },
+    {
+      "id": 21,
+      "id_pacote": 2,
+      "id_profissional": 2,
+      "id_subservico": 2,
+      "quantidade": 1,
+      "ordem_exibicao": 1
+    },
+    {
+      "id": 22,
+      "id_pacote": 2,
+      "id_profissional": 5,
+      "id_subservico": 29,
+      "quantidade": 1,
+      "ordem_exibicao": 2
+    },
+    {
+      "id": 31,
+      "id_pacote": 3,
+      "id_profissional": 3,
+      "id_subservico": 14,
+      "quantidade": 1,
+      "ordem_exibicao": 1
+    },
+    {
+      "id": 32,
+      "id_pacote": 3,
+      "id_profissional": 3,
+      "id_subservico": 18,
+      "quantidade": 1,
+      "ordem_exibicao": 2
+    }
+  ],
+  "jornadas": [
+    {
+      "id": 1,
+      "id_profissional": 1,
+      "dia_semana": 1,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "id_profissional": 1,
+      "dia_semana": 2,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 3,
+      "id_profissional": 1,
+      "dia_semana": 3,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 4,
+      "id_profissional": 1,
+      "dia_semana": 4,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 5,
+      "id_profissional": 1,
+      "dia_semana": 5,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 6,
+      "id_profissional": 1,
+      "dia_semana": 6,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "16:00:00",
+      "ativo": true
+    },
+    {
+      "id": 7,
+      "id_profissional": 2,
+      "dia_semana": 1,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 8,
+      "id_profissional": 2,
+      "dia_semana": 2,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 9,
+      "id_profissional": 2,
+      "dia_semana": 3,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 10,
+      "id_profissional": 2,
+      "dia_semana": 4,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 11,
+      "id_profissional": 2,
+      "dia_semana": 5,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 12,
+      "id_profissional": 2,
+      "dia_semana": 6,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "16:00:00",
+      "ativo": true
+    },
+    {
+      "id": 13,
+      "id_profissional": 3,
+      "dia_semana": 1,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 14,
+      "id_profissional": 3,
+      "dia_semana": 2,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 15,
+      "id_profissional": 3,
+      "dia_semana": 3,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 16,
+      "id_profissional": 3,
+      "dia_semana": 4,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 17,
+      "id_profissional": 3,
+      "dia_semana": 5,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 18,
+      "id_profissional": 3,
+      "dia_semana": 6,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "16:00:00",
+      "ativo": true
+    },
+    {
+      "id": 19,
+      "id_profissional": 4,
+      "dia_semana": 1,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 20,
+      "id_profissional": 4,
+      "dia_semana": 2,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 21,
+      "id_profissional": 4,
+      "dia_semana": 3,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 22,
+      "id_profissional": 4,
+      "dia_semana": 4,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 23,
+      "id_profissional": 4,
+      "dia_semana": 5,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "19:00:00",
+      "ativo": true
+    },
+    {
+      "id": 24,
+      "id_profissional": 4,
+      "dia_semana": 6,
+      "hora_inicio": "10:00:00",
+      "hora_fim": "16:00:00",
+      "ativo": true
+    },
+    {
+      "id": 25,
+      "id_profissional": 5,
+      "dia_semana": 1,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 26,
+      "id_profissional": 5,
+      "dia_semana": 2,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 27,
+      "id_profissional": 5,
+      "dia_semana": 3,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 28,
+      "id_profissional": 5,
+      "dia_semana": 4,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 29,
+      "id_profissional": 5,
+      "dia_semana": 5,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "18:00:00",
+      "ativo": true
+    },
+    {
+      "id": 30,
+      "id_profissional": 5,
+      "dia_semana": 6,
+      "hora_inicio": "09:00:00",
+      "hora_fim": "16:00:00",
+      "ativo": true
+    }
+  ],
+  "excecoes": [
+    {
+      "id": 1,
+      "id_profissional": 1,
+      "data_hora_inicio": "2026-10-06T12:00:00-03:00",
+      "data_hora_fim": "2026-10-06T14:00:00-03:00",
+      "tipo": "BLOQUEIO",
+      "descricao": "Intervalo excepcional."
+    },
+    {
+      "id": 2,
+      "id_profissional": 2,
+      "data_hora_inicio": "2026-10-12T00:00:00-03:00",
+      "data_hora_fim": "2026-10-13T00:00:00-03:00",
+      "tipo": "FOLGA",
+      "descricao": "Folga de exemplo."
+    },
+    {
+      "id": 3,
+      "id_profissional": 3,
+      "data_hora_inicio": "2026-10-20T00:00:00-03:00",
+      "data_hora_fim": "2026-10-23T00:00:00-03:00",
+      "tipo": "FERIAS",
+      "descricao": "Férias de exemplo."
+    },
+    {
+      "id": 4,
+      "id_profissional": 5,
+      "data_hora_inicio": "2026-10-08T19:00:00-03:00",
+      "data_hora_fim": "2026-10-08T21:00:00-03:00",
+      "tipo": "HORA_EXTRA",
+      "descricao": "Atendimento em horário estendido."
+    }
+  ],
+  "agendamentos": [
+    {
+      "id": 1,
+      "id_profissional": 1,
+      "id_subservico": 1,
+      "id_pacote": null,
+      "nome_cliente": "Cliente teste 01",
+      "telefone_cliente": "00000000000",
+      "data_hora_inicio": "2026-10-05T10:00:00-03:00",
+      "data_hora_fim": "2026-10-05T11:00:00-03:00",
+      "status": "AGENDADO"
+    },
+    {
+      "id": 2,
+      "id_profissional": 1,
+      "id_subservico": 4,
+      "id_pacote": 1,
+      "nome_cliente": "Cliente teste 02",
+      "telefone_cliente": "00000000000",
+      "data_hora_inicio": "2026-10-07T13:00:00-03:00",
+      "data_hora_fim": "2026-10-07T15:00:00-03:00",
+      "status": "AGENDADO"
+    },
+    {
+      "id": 3,
+      "id_profissional": 2,
+      "id_subservico": 9,
+      "id_pacote": null,
+      "nome_cliente": "Cliente teste 03",
+      "telefone_cliente": "00000000000",
+      "data_hora_inicio": "2026-10-05T13:00:00-03:00",
+      "data_hora_fim": "2026-10-05T16:00:00-03:00",
+      "status": "AGENDADO"
+    },
+    {
+      "id": 4,
+      "id_profissional": 3,
+      "id_subservico": 14,
+      "id_pacote": null,
+      "nome_cliente": "Cliente teste 04",
+      "telefone_cliente": "00000000000",
+      "data_hora_inicio": "2026-10-06T10:00:00-03:00",
+      "data_hora_fim": "2026-10-06T10:45:00-03:00",
+      "status": "AGENDADO"
+    },
+    {
+      "id": 5,
+      "id_profissional": 4,
+      "id_subservico": 20,
+      "id_pacote": null,
+      "nome_cliente": "Cliente teste 05",
+      "telefone_cliente": "00000000000",
+      "data_hora_inicio": "2026-10-07T11:00:00-03:00",
+      "data_hora_fim": "2026-10-07T11:35:00-03:00",
+      "status": "AGENDADO"
+    },
+    {
+      "id": 6,
+      "id_profissional": 5,
+      "id_subservico": 29,
+      "id_pacote": null,
+      "nome_cliente": "Cliente teste 06",
+      "telefone_cliente": "00000000000",
+      "data_hora_inicio": "2026-10-09T15:00:00-03:00",
+      "data_hora_fim": "2026-10-09T16:15:00-03:00",
+      "status": "AGENDADO"
+    },
+    {
+      "id": 7,
+      "id_profissional": 2,
+      "id_subservico": 11,
+      "id_pacote": null,
+      "nome_cliente": "Cliente teste 07",
+      "telefone_cliente": "00000000000",
+      "data_hora_inicio": "2026-10-06T10:00:00-03:00",
+      "data_hora_fim": "2026-10-06T11:00:00-03:00",
+      "status": "CANCELADO"
+    }
+  ],
+  "tags": [
+    {
+      "id": 1,
+      "nome": "Penteados"
+    },
+    {
+      "id": 2,
+      "nome": "Cabelos"
+    },
+    {
+      "id": 3,
+      "nome": "Unhas"
+    },
+    {
+      "id": 4,
+      "nome": "Maquiagem"
+    },
+    {
+      "id": 5,
+      "nome": "Estética"
+    },
+    {
+      "id": 6,
+      "nome": "Eventos"
+    }
+  ],
+  "galeria": [
+    {
+      "id": 1,
+      "imagem_url": "https://images.unsplash.com/photo-1581674210501-c760093514e8?w=600&q=80",
+      "ordem_exibicao": 1
+    },
+    {
+      "id": 2,
+      "imagem_url": "https://images.unsplash.com/photo-1785456283212-338f5bc44d50?w=600&q=80",
+      "ordem_exibicao": 2
+    },
+    {
+      "id": 3,
+      "imagem_url": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=600&q=80",
+      "ordem_exibicao": 3
+    },
+    {
+      "id": 4,
+      "imagem_url": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&q=80",
+      "ordem_exibicao": 4
+    },
+    {
+      "id": 5,
+      "imagem_url": "https://images.unsplash.com/photo-1779636198585-658170ee0283?w=600&q=80",
+      "ordem_exibicao": 5
+    },
+    {
+      "id": 6,
+      "imagem_url": "https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=600&q=80",
+      "ordem_exibicao": 6
+    },
+    {
+      "id": 7,
+      "imagem_url": "https://images.unsplash.com/photo-1733145820333-6fa6ed6f8f5d?w=600&q=80",
+      "ordem_exibicao": 7
+    },
+    {
+      "id": 8,
+      "imagem_url": "https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=600&q=80",
+      "ordem_exibicao": 8
+    },
+    {
+      "id": 9,
+      "imagem_url": "https://images.unsplash.com/photo-1549236177-f9b0031756eb?w=600&q=80",
+      "ordem_exibicao": 9
+    }
+  ],
+  "galeria_tag": [
+    {
+      "id_galeria": 1,
+      "id_tag": 1
+    },
+    {
+      "id_galeria": 1,
+      "id_tag": 2
+    },
+    {
+      "id_galeria": 1,
+      "id_tag": 6
+    },
+    {
+      "id_galeria": 2,
+      "id_tag": 2
+    },
+    {
+      "id_galeria": 3,
+      "id_tag": 2
+    },
+    {
+      "id_galeria": 4,
+      "id_tag": 3
+    },
+    {
+      "id_galeria": 5,
+      "id_tag": 3
+    },
+    {
+      "id_galeria": 6,
+      "id_tag": 5
+    },
+    {
+      "id_galeria": 7,
+      "id_tag": 5
+    },
+    {
+      "id_galeria": 8,
+      "id_tag": 4
+    },
+    {
+      "id_galeria": 8,
+      "id_tag": 6
+    },
+    {
+      "id_galeria": 9,
+      "id_tag": 1
+    },
+    {
+      "id_galeria": 9,
+      "id_tag": 4
+    },
+    {
+      "id_galeria": 9,
+      "id_tag": 6
+    }
+  ]
+}

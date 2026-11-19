@@ -1,0 +1,38 @@
+.profile__options,
+.profile__admin__options {
+  width: min(92rem, 100%);
+  margin: 0 auto;
+  border: 1px solid var(--kp-gold-border);
+  border-radius: 1.4rem;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: rgba(245, 235, 221, 0.3);
+  border-style: dashed;
+
+}
+
+.profile__admin__options {
+  background: gray;
+  background-opacity: 30%;
+}
+
+
+.profile__button {
+  border: 1px solid var(--kp-gold-border);
+  border-radius: 99rem;
+  padding: 0.9rem 2rem;
+  color: var(--kp-vinho);
+  background: var(--kp-card-bg);
+  font-family: var(--font-body), sans-serif;
+  font-size: 1.35rem;
+}
+
+.profile__button:hover {
+  border-color: var(--kp-vinho-low);
+  background: var(--kp-creme);
+}
+
