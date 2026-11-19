@@ -1,4 +1,3 @@
-# Deploy do frontend — Kenia Pinheiro Studio
 
 Este projeto é um frontend Vue 3 com Vite. O deploy é feito exclusivamente pelo GitHub Actions usando a Vercel CLI.
 
