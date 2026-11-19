@@ -7,7 +7,7 @@ O fluxo é:
 ```text
 Pull Request → build de validação, sem deploy
 push em develop → build → Preview via Vercel CLI
-push em main → build → Production via Vercel CLI
+push em master → build → Production via Vercel CLI
 ```
 
 A integração Git nativa da Vercel deve permanecer ignorada pelo campo **Ignored Build Step**.
@@ -242,7 +242,7 @@ checks
 
 ### Pull Request
 
-Em Pull Requests para `main` ou `develop`, executa somente:
+Em Pull Requests para `master` ou `develop`, executa somente:
 
 ```text
 npm ci
@@ -265,7 +265,7 @@ vercel deploy --prebuilt
 
 A variável usada será a de ambiente Preview, incluindo `VITE_API_URL` do backend dev.
 
-### Push em `main`
+### Push em `master`
 
 Executa:
 
@@ -333,11 +333,11 @@ Abra a URL exibida pelo comando `vercel deploy --prebuilt` no log do job.
 Depois de validar o Preview:
 
 ```text
-Pull Request develop → main
+Pull Request develop → master
 → aprovação
 → merge
 → Build frontend
-→ Deploy Production (main)
+→ Deploy Production (master)
 ```
 
 A URL final será a URL de produção do projeto frontend, por exemplo:
@@ -346,9 +346,9 @@ A URL final será a URL de produção do projeto frontend, por exemplo:
 https://site-kenia-pinheiro-studio.vercel.app
 ```
 
-## 10. Proteger `main`
+## 10. Proteger `master`
 
-No GitHub, proteja `main` com:
+No GitHub, proteja `master` com:
 
 - Pull Request obrigatório;
 - aprovação obrigatória;
@@ -362,7 +362,7 @@ Opcionalmente, em:
 Settings → Environments → production
 ```
 
-adicione aprovação obrigatória para o ambiente `production`. Nesse caso, o job `Deploy Production (main)` aguardará aprovação antes de publicar.
+adicione aprovação obrigatória para o ambiente `production`. Nesse caso, o job `Deploy Production (master)` aguardará aprovação antes de publicar.
 
 ## 11. Compatibilidade com a API
 

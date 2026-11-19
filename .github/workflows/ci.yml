@@ -3,12 +3,12 @@ name: CI/CD Frontend
 on:
   pull_request:
     branches:
-      - main
+      - master
       - develop
 
   push:
     branches:
-      - main
+      - master
       - develop
 
 permissions:
@@ -67,9 +67,9 @@ jobs:
         run: vercel deploy --prebuilt --token="${{ secrets.VERCEL_TOKEN }}"
 
   deploy-production:
-    name: Deploy Production (main)
+    name: Deploy Production (master)
     needs: checks
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
 
     environment:
