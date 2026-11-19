@@ -2,7 +2,7 @@
 ==============================================
 # Padronização de Classes:
     Usem nomes em inglês, para não ficar cada um em uma língua
-    por padrão de mercado, o melhor é a gente usar tudo em inglês
+    por padrão de mercado, o melhor é a gente usar todo o conteúdo em inglês
 
 --------------------------
 # Estrutura das Classes:
