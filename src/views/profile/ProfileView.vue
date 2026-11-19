@@ -5,6 +5,8 @@ import ButtonAdmin from '@/components/pages/profile/ButtonAdmin.vue'
 import { ref, onMounted } from 'vue'
 import { apiFetch } from '@/client.js'
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const modalEdicao = ref(false)
 
 const perfil = ref({
@@ -52,7 +54,7 @@ function onPerfilSalvo(dadosAtualizados) {
   <main class="profile">
     <section class="profile__card">
       <div class="profile__photo-box">
-        <img v-if="perfil.imagem_url" class="profile__photo" :src="`http://localhost:8000/upload/perfil/${perfil.imagem_url}?t=${Date.now()}`" alt="Foto da profissional" />
+        <img v-if="perfil.imagem_url" class="profile__photo" :src="`${API_URL}/upload/perfil/${perfil.imagem_url}?t=${Date.now()}`" alt="Foto da profissional" />
       </div>
 
       <div class="profile__info">
