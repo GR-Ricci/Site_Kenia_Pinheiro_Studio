@@ -63,8 +63,18 @@ jobs:
       - name: Build Vercel Preview
         run: vercel build --token="${{ secrets.VERCEL_TOKEN }}"
 
-      - name: Deploy Vercel Preview
-        run: vercel deploy --prebuilt --token="${{ secrets.VERCEL_TOKEN }}"
+      - name: Deploy Vercel Preview with develop branch metadata
+        run: |
+          vercel deploy \
+            --prebuilt \
+            --token="${{ secrets.VERCEL_TOKEN }}" \
+            --meta githubDeployment=1 \
+            --meta githubCommitRef=develop
+
+      - name: Show expected stable Preview URL
+        run: |
+          echo "A URL estável esperada segue o formato:"
+          echo "https://site-kenia-pinheiro-studio-git-develop-gabriel-ricci.vercel.app"
 
   deploy-production:
     name: Deploy Production (master)
