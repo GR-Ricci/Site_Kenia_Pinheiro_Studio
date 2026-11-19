@@ -94,7 +94,7 @@ jobs:
             "${FRONTEND_PREVIEW_ALIAS}" \
             --scope="${VERCEL_SCOPE}" \
             --token="${{ secrets.VERCEL_TOKEN }}" \
-            --yes
+            --non-interactive
 
           echo "Frontend Preview fixo:"
           echo "https://${FRONTEND_PREVIEW_ALIAS}"
