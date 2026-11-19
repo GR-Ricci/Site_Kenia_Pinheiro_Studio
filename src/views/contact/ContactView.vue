@@ -1,56 +1,100 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { apiFetch } from '@/client.js'
+
+const contato = ref({
+  telefone: '',
+  whatsapp: '',
+  email: '',
+  rede_social: '',
+  endereco: '',
+})
+
+onMounted(async () => {
+  try {
+    contato.value = await apiFetch('/contato')
+  } catch (e) {
+    console.error('Erro ao carregar contato:', e)
+  }
+})
+
+function telefoneUrl(numero) {
+  if (!numero) return '#'
+  return `tel:+55${numero.replace(/\D/g, '')}`
+}
+
+function whatsappUrl(numero) {
+  if (!numero) return '#'
+  const soDigitos = numero.replace(/\D/g, '')
+  return `https://wa.me/55${soDigitos}`
+}
+
+function instagramUrl(rede) {
+  if (!rede) return '#'
+  const semArroba = rede.replace('@', '')
+  return `https://instagram.com/${semArroba}`
+}
+
+// FUNÇÃO ADICIONADA AQUI
+function googleMapsUrl(endereco) {
+  if (!endereco) return '#'
+  const enderecoFormatado = encodeURIComponent(endereco)
+  return `https://www.google.com/maps/search/?api=1&query=${enderecoFormatado}`
+}
+</script>
 
 <template>
   <div class="contact">
     <header class="contact__header">
       <p class="contact__eyebrow">Estamos aqui para você</p>
       <h1 class="contact__title">Entre em Contato</h1>
-      <p class="contact__subtitle">Agende pelo WhatsApp, ligue ou venha nos visitar.</p>
+      <p class="contact__subtitle">Agende pelo WhatsApp, ou venha nos visitar!</p>
     </header>
 
     <div class="contact__content">
       <div class="contact__list">
-        <a href="tel:+5516992068812" class="contact__item">
+        <a v-if="contato.telefone" :href="telefoneUrl(contato.telefone)" class="contact__item">
           <div class="contact__item-icon"><i class="fa-solid fa-phone"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">Telefone</p>
-            <p class="contact__item-value">(16) 99206-8812</p>
+            <p class="contact__item-value">{{ contato.telefone }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
 
-        <a href="https://wa.me/5516992068812" target="_blank" rel="noreferrer" class="contact__item">
+        <a v-if="contato.whatsapp" :href="whatsappUrl(contato.whatsapp)" target="_blank" rel="noreferrer" class="contact__item">
           <div class="contact__item-icon"><i class="fa-brands fa-whatsapp"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">WhatsApp</p>
-            <p class="contact__item-value">(16) 99206-8812</p>
+            <p class="contact__item-value">{{ contato.whatsapp }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
 
-        <a href="mailto:keniapinheirostudio@gmail.com" class="contact__item">
+        <a v-if="contato.email" :href="`mailto:${contato.email}`" class="contact__item">
           <div class="contact__item-icon"><i class="fa-solid fa-envelope"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">E-mail</p>
-            <p class="contact__item-value">keniapinheirostudio@gmail.com</p>
+            <p class="contact__item-value">{{ contato.email }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
 
-        <a href="https://instagram.com/keniapinheirostudio" target="_blank" rel="noreferrer" class="contact__item">
+        <a v-if="contato.rede_social" :href="instagramUrl(contato.rede_social)" target="_blank" rel="noreferrer" class="contact__item">
           <div class="contact__item-icon"><i class="fa-brands fa-instagram"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">Instagram</p>
-            <p class="contact__item-value">@keniapinheirostudio</p>
+            <p class="contact__item-value">{{ contato.rede_social }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
 
-        <a href="https://maps.google.com" target="_blank" rel="noreferrer" class="contact__item">
+        <!-- LINK DO MAPS CORRIGIDO AQUI -->
+        <a v-if="contato.endereco" :href="googleMapsUrl(contato.endereco)" target="_blank" rel="noreferrer" class="contact__item">
           <div class="contact__item-icon"><i class="fa-solid fa-location-dot"></i></div>
           <div class="contact__item-text">
             <p class="contact__item-desc">Endereço</p>
-            <p class="contact__item-value">Rua Expedicionário Lellis, 1703 — Centro, Sertãozinho SP</p>
+            <p class="contact__item-value">{{ contato.endereco }}</p>
           </div>
           <i class="fa-solid fa-arrow-right contact__item-arrow"></i>
         </a>
@@ -76,34 +120,34 @@
    Header
    ============================================ */
 .contact__header {
-  padding: 3.5rem 1rem;
-  text-align: center;
-  background: var(--kp-mahogany);
-  border-bottom: 2px solid var(--kp-gold);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 185px;
+  width: auto;
+  background-color: #3d2010;
+  color: #f5ebdd;
 }
 
 .contact__eyebrow {
-  font-family: var(--font-body);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--kp-gold);
+  color: #c9a66b;
+  font-family: 'Lato', sans-serif;
+  letter-spacing: 2px;
+  font-size: 12px;
 }
 
 .contact__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
-  color: var(--kp-creme);
-  line-height: 1.2;
-  margin-top: 0.8rem;
+  color: #f5ebdd;
+  font-family: 'Playfair Display', serif;
+  font-size: 35px;
 }
 
 .contact__subtitle {
-  font-family: var(--font-body);
-  font-size: 1.4rem;
-  color: rgba(245, 235, 221, 0.55);
-  max-width: 40rem;
-  margin: 1.2rem auto 0;
+  color: #f5ebdd72;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
 }
 
 /* ============================================

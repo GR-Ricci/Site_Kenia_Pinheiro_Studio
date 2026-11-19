@@ -1,38 +1,57 @@
 <script setup>
-import { RouterLink } from 'vue-router'
-import { whatsappLink } from '@/data/studio.js'
+import { ref, onMounted } from 'vue'
+import { apiFetch } from '@/client.js'
+
+const homeImagem = ref(null)
+const contato = ref(null)
+
+async function carregarHome() {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/home`)
+    const dados = await res.json()
+    if (dados.imagem_url) {
+      homeImagem.value = `${import.meta.env.VITE_API_URL}/upload/home/${dados.imagem_url}?v=${dados.atualizado_em}`
+    }
+  } catch (e) {
+    console.error('Erro ao carregar home:', e)
+  }
+}
+
+async function carregarContato() {
+  try {
+    contato.value = await apiFetch('/contato')
+  } catch (e) {
+    console.warn('Erro ao buscar contato:', e)
+  }
+}
+
+function whatsappLink() {
+  const numBruto = contato.value?.whatsapp || contato.value?.telefone || '5516992568812'
+  let num = String(numBruto).replace(/\D/g, '')
+  if (num && !num.startsWith('55')) num = '55' + num
+  return `https://wa.me/${num}?text=${encodeURIComponent('Olá! Gostaria de Agendar um Horário.')}`
+}
+
+onMounted(() => {
+  carregarHome()
+  carregarContato()
+})
 </script>
 
 <template>
   <section class="-section-hero">
-  <img
-         class="kenia__foto"
-          src="@/assets/images/home/cover01.jpeg"
-          alt="Kenia Pinheiro"
-          />
+    <img v-if="homeImagem" class="kenia__foto" :src="homeImagem" alt="Kenia Pinheiro" />
     <div class="-hero__overlay" aria-hidden="true"></div>
-    
+
     <div class="-container">
       <div class="-hero__content">
         <span class="-hero__eyebrow">Sertãozinho · SP</span>
-
         <h1 class="-hero__logo">Kp</h1>
         <span class="-hero__studio">Studio</span>
-
-        <p class="-hero__subtitle">
-          Especialistas em realizar a beleza natural dos seus cachos
-        </p>
+        <p class="-hero__subtitle">Especialistas em realizar a beleza natural dos seus cachos</p>
 
         <div class="-hero__actions">
-          <a
-            :href="whatsappLink()"
-            target="_blank"
-            rel="noopener"
-            class="-hero__btn -hero__btn--filled"
-          >
-            Agendar Horário
-          </a>
-
+          <a :href="whatsappLink()" target="_blank" rel="noopener" class="-hero__btn -hero__btn--filled"> Agendar Horário </a>
         </div>
       </div>
     </div>
@@ -55,14 +74,13 @@ import { whatsappLink } from '@/data/studio.js'
 
 .kenia__foto {
   position: absolute;
-  inset: 0;                 
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;        
-  object-position: center; 
-  z-index: 0;               
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
   pointer-events: none;
-  
 }
 
 .-hero__overlay {
@@ -72,7 +90,7 @@ import { whatsappLink } from '@/data/studio.js'
   pointer-events: none;
   background: rgba(61, 32, 16, 0.35);
 }
- 
+
 .-container {
   position: relative;
   z-index: 2;
@@ -172,9 +190,11 @@ import { whatsappLink } from '@/data/studio.js'
   border-color: var(--kp-gold);
 }
 
+/* --- HOVER ALTERADO AQUI --- */
 .-hero__btn--filled:hover {
-  background: transparent;
-  color: var(--kp-gold);
+  background: var(--kp-vinho);
+  color: var(--kp-creme);
+  border-color: var(--kp-vinho);
 }
 
 .-hero__scroll {
